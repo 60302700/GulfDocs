@@ -294,6 +294,49 @@ document.addEventListener('DOMContentLoaded', () => {
         loadDefaultTemplate();
     }
 
+    // 4. Merge shared invoice profile into company fields if they are still blank.
+    //    A profile saved/imported on invoice.html automatically carries over to
+    //    the Custom Template editor — no re-entering needed.
+    try {
+        const sharedRaw = localStorage.getItem('gulfdocs_invoice_profile');
+        if (sharedRaw) {
+            const shared = JSON.parse(sharedRaw);
+
+            const fillIfEmpty = (id, val) => {
+                const el = document.getElementById(id);
+                if (el && !el.value && val) el.value = val;
+            };
+
+            fillIfEmpty('company-name', shared.name);
+            fillIfEmpty('company-trn', shared.trn);
+            fillIfEmpty('company-phone', shared.phone);
+            fillIfEmpty('company-email', shared.email);
+
+            // Notes / footer
+            const notesEl = document.getElementById('doc-notes');
+            if (notesEl && !notesEl.value && shared.footer) notesEl.value = shared.footer;
+
+            // Currency — only override if still on default
+            if (shared.currency) {
+                const sel = document.getElementById('currency-select');
+                if (sel && sel.value === 'QAR') sel.value = shared.currency;
+            }
+
+            // Logo — only apply if no logo was loaded from the draft already
+            if (!companyLogoBase64 && shared.logo && shared.logo.startsWith('data:')) {
+                companyLogoBase64 = shared.logo;
+                const badge = document.getElementById('logo-preview-badge');
+                const img = document.getElementById('logo-preview-img');
+                const text = document.getElementById('logo-preview-text');
+                if (badge) badge.style.display = 'block';
+                if (img) img.src = shared.logo;
+                if (text) text.textContent = 'Click clear/change logo';
+            }
+        }
+    } catch (e) {
+        console.warn('Could not merge shared invoice profile into custom template:', e);
+    }
+
     // Ensure we start with at least one row if empty
     const itemsContainer = document.getElementById('items-list-container');
     if (itemsContainer && itemsContainer.children.length === 0) {
