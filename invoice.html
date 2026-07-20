@@ -39,6 +39,10 @@
                 <button onclick="exportBusinessProfile()"
                     style="background:transparent; border:none; font-size:11px; font-weight:700; color:var(--doc-text-secondary); cursor:pointer; text-transform:uppercase;">Export
                     JSON</button>
+                <button onclick="saveProfileToStorage()" id="save-profile-btn"
+                    style="background: #eff6ff; border: 1px solid #bfdbfe; font-size:11px; font-weight:700; color:var(--doc-primary); cursor:pointer; text-transform:uppercase; padding: 5px 10px; border-radius: 6px; transition: all 0.2s;">💾
+                    Save
+                    Profile</button>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
                 <label for="currency-select"
@@ -83,19 +87,40 @@
                     <input type="file" id="logo-upload" class="no-print" accept="image/*" style="display:none;"
                         onchange="loadLogo(event)">
                     <img id="brand-logo" src=""
-                        style="display:none; max-width: 100px; max-height: 100px; margin-bottom: 10px; cursor:pointer;"
+                        style="display:none; max-width: 120px; max-height: 80px; margin-bottom: 10px; cursor:pointer; object-fit: contain;"
                         onclick="document.getElementById('logo-upload').click()" title="Click to change logo">
                     <div id="logo-placeholder" class="no-print" onclick="document.getElementById('logo-upload').click()"
-                        style="width: 100px; height: 100px; background: #f8fafc; border: 1px dashed #cbd5e1; display:flex; align-items:center; justify-content:center; cursor:pointer; margin-bottom: 10px; border-radius: 8px;">
-                        <span style="font-size: 12px; color: #64748b; font-weight: 600;">+ Ad Logo</span>
+                        style="width: 100px; height: 70px; background: #f8fafc; border: 2px dashed #cbd5e1; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; margin-bottom: 10px; border-radius: 8px; gap: 4px; transition: border-color 0.2s;">
+                        <svg width="20" height="20" fill="none" stroke="#94a3b8" stroke-width="2" viewBox="0 0 24 24">
+                            <rect width="18" height="18" x="3" y="3" rx="2" />
+                            <circle cx="8.5" cy="8.5" r="1.5" />
+                            <path d="M21 15l-5-5L5 21" />
+                        </svg>
+                        <span style="font-size: 10px; color: #94a3b8; font-weight: 600;">Upload Logo</span>
                     </div>
 
                     <div class="editable b-name" id="profile-name" contenteditable="true"
-                        placeholder="Your Business Name"></div>
+                        placeholder="Your Business Name" oninput="autoSaveProfile()"></div>
                     <div class="b-field">
                         <span class="b-label" style="color:var(--doc-primary)">VAT/TRN</span>
                         <div class="editable optional" id="profile-trn" contenteditable="true"
-                            placeholder="Tax Registration Number" style="font-weight: 700;"></div>
+                            placeholder="Tax Registration Number" style="font-weight: 700;" oninput="autoSaveProfile()">
+                        </div>
+                    </div>
+                    <div class="b-field">
+                        <span class="b-label">Address</span>
+                        <div class="editable optional" id="profile-address" contenteditable="true"
+                            placeholder="City, Country" style="line-height: 1.4;" oninput="autoSaveProfile()"></div>
+                    </div>
+                    <div class="b-field">
+                        <span class="b-label">Phone</span>
+                        <div class="editable optional" id="profile-phone" contenteditable="true"
+                            placeholder="+974 XXXX XXXX" oninput="autoSaveProfile()"></div>
+                    </div>
+                    <div class="b-field">
+                        <span class="b-label">Email</span>
+                        <div class="editable optional" id="profile-email" contenteditable="true"
+                            placeholder="info@company.com" oninput="autoSaveProfile()"></div>
                     </div>
                 </div>
 

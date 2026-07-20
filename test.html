@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{document_title}}</title>
+
+<style>
+:root{
+    --primary: var(--doc-primary, #1f4e79);
+    --text: var(--doc-text, #222);
+    --text-secondary: var(--doc-text-secondary, #666);
+    --border: var(--doc-border, #d9d9d9);
+    --surface: var(--doc-surface, #ffffff);
+}
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    margin:0;
+    padding:40px;
+    color:var(--text);
+    background:var(--surface);
+    font-size:14px;
+    line-height:1.5;
+}
+
+.invoice-container{
+    max-width:1000px;
+    margin:0 auto;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    border-bottom:3px solid var(--primary);
+    padding-bottom:20px;
+    margin-bottom:30px;
+}
+
+.company-section{
+    display:flex;
+    gap:20px;
+    align-items:flex-start;
+}
+
+.logo{
+    max-width:120px;
+    max-height:120px;
+}
+
+.company-info h1{
+    margin:0;
+    color:var(--primary);
+    font-size:30px;
+}
+
+.company-info p{
+    margin:4px 0;
+    color:var(--text-secondary);
+}
+
+.document-meta{
+    text-align:right;
+}
+
+.document-meta h2{
+    margin:0;
+    color:var(--primary);
+    font-size:34px;
+    letter-spacing:1px;
+}
+
+.document-meta p{
+    margin:5px 0;
+}
+
+.section-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:30px;
+    margin-bottom:30px;
+}
+
+.card{
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:16px;
+}
+
+.card-title{
+    color:var(--primary);
+    font-weight:bold;
+    margin-bottom:10px;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+}
+
+.card p{
+    margin:5px 0;
+}
+
+.items-table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+
+.items-table th{
+    background:var(--primary);
+    color:white;
+    padding:12px;
+    text-align:left;
+}
+
+.items-table td{
+    padding:12px;
+    border-bottom:1px solid var(--border);
+}
+
+.items-table tr:nth-child(even){
+    background:#fafafa;
+}
+
+.right{
+    text-align:right;
+}
+
+.summary{
+    width:380px;
+    margin-left:auto;
+    margin-top:25px;
+}
+
+.summary table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.summary td{
+    padding:10px;
+    border-bottom:1px solid var(--border);
+}
+
+.summary .grand{
+    background:var(--primary);
+    color:white;
+    font-weight:bold;
+    font-size:18px;
+}
+
+.notes{
+    margin-top:40px;
+    border-top:2px solid var(--border);
+    padding-top:20px;
+}
+
+.notes h3{
+    color:var(--primary);
+    margin-top:0;
+}
+
+.footer{
+    margin-top:50px;
+    text-align:center;
+    color:var(--text-secondary);
+    font-size:12px;
+}
+
+@media print{
+    body{
+        padding:20px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="invoice-container">
+
+    <div class="header">
+
+        <div class="company-section">
+
+            {{#if company_logo}}
+            <img src="{{company_logo}}" class="logo" alt="Company Logo">
+            {{/if}}
+
+            <div class="company-info">
+                <h1>{{company_name}}</h1>
+
+                {{#if company_trn}}
+                <p><strong>TRN/VAT:</strong> {{company_trn}}</p>
+                {{/if}}
+
+                {{#if company_phone}}
+                <p>{{company_phone}}</p>
+                {{/if}}
+
+                {{#if company_email}}
+                <p>{{company_email}}</p>
+                {{/if}}
+            </div>
+
+        </div>
+
+        <div class="document-meta">
+            <h2>{{document_title}}</h2>
+
+            <p><strong>No:</strong> {{document_number}}</p>
+            <p><strong>Date:</strong> {{document_date}}</p>
+
+            {{#if document_due_date}}
+            <p><strong>Due Date:</strong> {{document_due_date}}</p>
+            {{/if}}
+        </div>
+
+    </div>
+
+    <div class="section-grid">
+
+        <div class="card">
+            <div class="card-title">Bill To</div>
+
+            <p><strong>{{client_name}}</strong></p>
+
+            {{#if client_trn}}
+            <p>TRN/VAT: {{client_trn}}</p>
+            {{/if}}
+
+            {{#if client_phone}}
+            <p>{{client_phone}}</p>
+            {{/if}}
+
+            {{#if client_email}}
+            <p>{{client_email}}</p>
+            {{/if}}
+
+            {{#if client_address}}
+            <p>{{client_address}}</p>
+            {{/if}}
+        </div>
+
+        <div class="card">
+            <div class="card-title">Invoice Summary</div>
+
+            <p><strong>Document:</strong> {{document_title}}</p>
+            <p><strong>Reference:</strong> {{document_number}}</p>
+            <p><strong>Currency:</strong> {{currency}}</p>
+        </div>
+
+    </div>
+
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th style="width:5%">#</th>
+                <th>Description</th>
+                <th style="width:15%">SKU</th>
+                <th style="width:10%">Qty</th>
+                <th style="width:15%">Unit Price</th>
+                <th style="width:15%">Total</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {{#items}}
+            <tr>
+                <td>{{item_index}}</td>
+                <td>{{item_description}}</td>
+
+                <td>
+                    {{#if item_sku}}
+                    {{item_sku}}
+                    {{/if}}
+                </td>
+
+                <td>{{item_qty}}</td>
+                <td class="right">{{item_price}}</td>
+                <td class="right">{{item_total}}</td>
+            </tr>
+            {{/items}}
+
+        </tbody>
+    </table>
+
+    <div class="summary">
+        <table>
+
+            <tr>
+                <td>Subtotal</td>
+                <td class="right">{{currency}} {{subtotal}}</td>
+            </tr>
+
+            <tr>
+                <td>VAT ({{vat_rate}}%)</td>
+                <td class="right">{{currency}} {{vat_amount}}</td>
+            </tr>
+
+            {{#if discount}}
+            <tr>
+                <td>Discount</td>
+                <td class="right">- {{currency}} {{discount}}</td>
+            </tr>
+            {{/if}}
+
+            <tr class="grand">
+                <td>Grand Total</td>
+                <td class="right">{{currency}} {{grand_total}}</td>
+            </tr>
+
+        </table>
+    </div>
+
+    {{#if notes}}
+    <div class="notes">
+        <h3>Notes & Terms</h3>
+        <p>{{notes}}</p>
+    </div>
+    {{/if}}
+
+    <div class="footer">
+        <p>Thank you for your business.</p>
+    </div>
+
+</div>
+
+</body>
+</html>
