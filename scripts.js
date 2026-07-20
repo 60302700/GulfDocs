@@ -169,29 +169,34 @@ function _collectProfile() {
         phone: document.getElementById('profile-phone')?.innerText.trim() || '',
         email: document.getElementById('profile-email')?.innerText.trim() || '',
         footer: document.getElementById('profile-footer')?.innerText.trim() || '',
-        logo: document.getElementById('brand-logo')?.src || '',
+        logo: document.getElementById('brand-logo')?.getAttribute('src') || '',
         currency: document.getElementById('currency-select')?.value || 'QAR',
         theme: typeof ThemeManager !== 'undefined' ? ThemeManager.getThemeObject() : null,
     };
 }
 
 function _applyProfile(profile) {
+    // Always set the element's content — even empty strings clear stale data.
+    // Use textContent (not innerText) for reliable programmatic updates on
+    // contenteditable divs across all browsers.
     const set = (id, val) => {
         const el = document.getElementById(id);
-        if (el && val) el.innerText = val;
+        if (el == null) return;
+        el.textContent = (val != null) ? val : '';
     };
-    set('profile-name', profile.name);
-    set('profile-trn', profile.trn);
-    set('profile-address', profile.address);
-    set('profile-phone', profile.phone);
-    set('profile-email', profile.email);
-    set('profile-footer', profile.footer);
+    set('profile-name', profile.name ?? '');
+    set('profile-trn', profile.trn ?? '');
+    set('profile-address', profile.address ?? '');
+    set('profile-phone', profile.phone ?? '');
+    set('profile-email', profile.email ?? '');
+    set('profile-footer', profile.footer ?? '');
 
     if (profile.currency) {
         const sel = document.getElementById('currency-select');
         if (sel) { sel.value = profile.currency; updateCurrency(); }
     }
-    if (profile.logo && profile.logo.startsWith('data:')) {
+    // Logo: accept both data: URLs (from upload) and empty string (no logo)
+    if (typeof profile.logo === 'string') {
         _applyLogo(profile.logo);
     }
     if (profile.theme && typeof ThemeManager !== 'undefined') {
