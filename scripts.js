@@ -1,3 +1,7 @@
+// ─── Constants ────────────────────────────────────────────────────────────────
+const PROFILE_KEY = 'gulfdocs_invoice_profile';
+
+// ─── On Page Load ─────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize date to today
     const dateInput = document.getElementById('inv-date');
@@ -8,8 +12,11 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCurrency();
     // Add first row
     addRow();
+    // Restore saved profile from localStorage
+    loadProfileFromStorage();
 });
 
+// ─── Currency ─────────────────────────────────────────────────────────────────
 function updateCurrency() {
     const selector = document.getElementById('currency-select');
     if (!selector) return;
@@ -17,8 +24,10 @@ function updateCurrency() {
     document.querySelectorAll('.currency-label').forEach(el => {
         el.textContent = currency;
     });
+    autoSaveProfile();
 }
 
+// ─── Line Items ───────────────────────────────────────────────────────────────
 let itemCounter = 0;
 
 function addRow() {
@@ -84,37 +93,140 @@ function calculateTotals() {
     document.getElementById('sum-total').textContent = Math.max(0, grandTotal).toFixed(2);
 }
 
+// ─── Logo Upload ──────────────────────────────────────────────────────────────
 function loadLogo(event) {
     const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const logoEl = document.getElementById('brand-logo');
-            logoEl.src = e.target.result;
-            logoEl.style.display = 'block';
-            document.getElementById('logo-placeholder').style.display = 'none';
-        }
-        reader.readAsDataURL(file);
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        _applyLogo(e.target.result);
+        autoSaveProfile();
+    };
+    reader.readAsDataURL(file);
+}
+
+function _applyLogo(dataUrl) {
+    const logoEl = document.getElementById('brand-logo');
+    const placeholder = document.getElementById('logo-placeholder');
+    if (dataUrl && dataUrl.startsWith('data:')) {
+        logoEl.src = dataUrl;
+        logoEl.style.display = 'block';
+        if (placeholder) placeholder.style.display = 'none';
+    } else {
+        logoEl.src = '';
+        logoEl.style.display = 'none';
+        if (placeholder) placeholder.style.display = 'flex';
     }
 }
 
-// JSON Profile Export / Import functionality
-function exportBusinessProfile() {
-    const profile = {
-        name: document.getElementById('profile-name')?.innerText || '',
-        trn: document.getElementById('profile-trn')?.innerText || '',
-        footer: document.getElementById('profile-footer')?.innerText || '',
+// ─── localStorage Profile Persistence ────────────────────────────────────────
+/**
+ * Read all profile fields and save them to localStorage immediately.
+ * Called manually via the "Save Profile" button.
+ */
+function saveProfileToStorage() {
+    const profile = _collectProfile();
+    try {
+        localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+        _showSaveToast();
+    } catch (e) {
+        // localStorage full (large base64 logo) — warn gracefully
+        alert('Could not save profile: storage may be full. Try exporting as JSON instead.');
+    }
+}
+
+/**
+ * Debounced auto-save — called on every keystroke in profile fields.
+ */
+let _autoSaveTimer = null;
+function autoSaveProfile() {
+    clearTimeout(_autoSaveTimer);
+    _autoSaveTimer = setTimeout(() => {
+        try {
+            localStorage.setItem(PROFILE_KEY, JSON.stringify(_collectProfile()));
+        } catch (e) { /* storage full — silent fail on auto-save */ }
+    }, 800);
+}
+
+/**
+ * Restore saved profile on page load.
+ */
+function loadProfileFromStorage() {
+    try {
+        const raw = localStorage.getItem(PROFILE_KEY);
+        if (!raw) return;
+        const profile = JSON.parse(raw);
+        _applyProfile(profile);
+    } catch (e) { /* corrupt data — ignore */ }
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+function _collectProfile() {
+    return {
+        name: document.getElementById('profile-name')?.innerText.trim() || '',
+        trn: document.getElementById('profile-trn')?.innerText.trim() || '',
+        address: document.getElementById('profile-address')?.innerText.trim() || '',
+        phone: document.getElementById('profile-phone')?.innerText.trim() || '',
+        email: document.getElementById('profile-email')?.innerText.trim() || '',
+        footer: document.getElementById('profile-footer')?.innerText.trim() || '',
         logo: document.getElementById('brand-logo')?.src || '',
         currency: document.getElementById('currency-select')?.value || 'QAR',
-        theme: typeof ThemeManager !== 'undefined' ? ThemeManager.getThemeObject() : null
+        theme: typeof ThemeManager !== 'undefined' ? ThemeManager.getThemeObject() : null,
     };
+}
 
-    // Create Blob and trigger download
+function _applyProfile(profile) {
+    const set = (id, val) => {
+        const el = document.getElementById(id);
+        if (el && val) el.innerText = val;
+    };
+    set('profile-name', profile.name);
+    set('profile-trn', profile.trn);
+    set('profile-address', profile.address);
+    set('profile-phone', profile.phone);
+    set('profile-email', profile.email);
+    set('profile-footer', profile.footer);
+
+    if (profile.currency) {
+        const sel = document.getElementById('currency-select');
+        if (sel) { sel.value = profile.currency; updateCurrency(); }
+    }
+    if (profile.logo && profile.logo.startsWith('data:')) {
+        _applyLogo(profile.logo);
+    }
+    if (profile.theme && typeof ThemeManager !== 'undefined') {
+        ThemeManager.applyThemeObject(profile.theme);
+    }
+}
+
+function _showSaveToast() {
+    let toast = document.getElementById('save-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'save-toast';
+        toast.style.cssText = `
+            position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px);
+            background: #1e293b; color: #fff; font-family: inherit; font-size: 13px; font-weight: 600;
+            padding: 10px 20px; border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+            display: flex; align-items: center; gap: 8px; transition: transform 0.3s ease; z-index: 9999;
+        `;
+        document.body.appendChild(toast);
+    }
+    toast.innerHTML = '✅ Profile saved to browser';
+    // Slide in
+    setTimeout(() => { toast.style.transform = 'translateX(-50%) translateY(0)'; }, 10);
+    // Slide out after 2.5 s
+    setTimeout(() => { toast.style.transform = 'translateX(-50%) translateY(80px)'; }, 2600);
+}
+
+// ─── JSON Export / Import ─────────────────────────────────────────────────────
+function exportBusinessProfile() {
+    const profile = _collectProfile();
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(profile, null, 2));
-    const dlAnchorElem = document.createElement('a');
-    dlAnchorElem.setAttribute("href", dataStr);
-    dlAnchorElem.setAttribute("download", "business_profile.json");
-    dlAnchorElem.click();
+    const a = document.createElement('a');
+    a.href = dataStr;
+    a.download = 'gulfdocs_profile.json';
+    a.click();
 }
 
 function importBusinessProfile(event) {
@@ -124,31 +236,15 @@ function importBusinessProfile(event) {
     reader.onload = function (e) {
         try {
             const profile = JSON.parse(e.target.result);
-            if (profile.name) {
-                document.getElementById('profile-name').innerText = profile.name;
-            }
-            if (profile.trn) {
-                document.getElementById('profile-trn').innerText = profile.trn;
-            }
-            if (profile.footer) {
-                document.getElementById('profile-footer').innerText = profile.footer;
-            }
-            if (profile.currency) {
-                document.getElementById('currency-select').value = profile.currency;
-                updateCurrency();
-            }
-            if (profile.logo && profile.logo.startsWith('data:')) {
-                const logoEl = document.getElementById('brand-logo');
-                logoEl.src = profile.logo;
-                logoEl.style.display = 'block';
-                document.getElementById('logo-placeholder').style.display = 'none';
-            }
-            if (profile.theme && typeof ThemeManager !== 'undefined') {
-                ThemeManager.applyThemeObject(profile.theme);
-            }
+            _applyProfile(profile);
+            // Also persist the imported profile
+            localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+            _showSaveToast();
         } catch (err) {
-            alert("Oops! This doesn't look like a valid profile file.");
+            alert("Oops! This doesn't look like a valid GulfDocs profile file.");
         }
     };
     reader.readAsText(file);
+    // Reset input so the same file can be re-imported
+    event.target.value = '';
 }
