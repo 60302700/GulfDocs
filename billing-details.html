@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing Details Generator | GulfDocs</title>
+    <!-- Fallback CSP for static hosting; keep in sync with the helmet config in server.js -->
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self';">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css">
+    <script src="billing-details.js" defer></script>
+    <script src="theme-manager.js" defer></script>
+    <script src="cookie-consent.js" defer></script>
+</head>
+
+<body>
+
+    <!-- NAV -->
+    <nav class="no-print">
+        <div style="display:flex; align-items:center; gap:16px;">
+            <a href="/" class="logo">GulfDocs<span>.</span></a>
+            <span style="width: 1px; height: 16px; background: var(--doc-border);"></span>
+            <span
+                style="font-size: 11px; font-weight: 700; color: var(--doc-text-secondary); text-transform: uppercase; letter-spacing: 0.1em;">Billing
+                Details Editor</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:16px;">
+            <div
+                style="display:flex; align-items:center; gap:8px; margin-right: 12px; border-right: 1px solid var(--doc-border); padding-right: 16px;">
+                <input type="file" id="import-profile" accept=".json" style="display:none;"
+                    onchange="importBusinessProfile(event)">
+                <button onclick="document.getElementById('import-profile').click()"
+                    style="background:transparent; border:none; font-size:11px; font-weight:700; color:var(--doc-text-secondary); cursor:pointer; text-transform:uppercase;">Import
+                    Profile</button>
+                <button onclick="exportBusinessProfile()"
+                    style="background:transparent; border:none; font-size:11px; font-weight:700; color:var(--doc-text-secondary); cursor:pointer; text-transform:uppercase;">Export
+                    JSON</button>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <label for="currency-select"
+                    style="font-size: 11px; font-weight: 700; color: var(--doc-text-secondary); text-transform: uppercase;">Currency:</label>
+                <select id="currency-select" onchange="updateCurrency()"
+                    style="padding: 6px 12px; border-radius: 6px; border: 1px solid var(--doc-border); font-family: inherit; font-size: 12px; font-weight: 700; outline: none; background: #f8fafc; cursor: pointer;">
+                    <option value="QAR">QAR (Qatari Riyal)</option>
+                    <option value="AED">AED (UAE Dirham)</option>
+                    <option value="SAR">SAR (Saudi Riyal)</option>
+                    <option value="OMR">OMR (Omani Rial)</option>
+                    <option value="BHD">BHD (Bahraini Dinar)</option>
+                    <option value="KWD">KWD (Kuwaiti Dinar)</option>
+                    <option value="USD">USD (US Dollar)</option>
+                </select>
+            </div>
+            <button onclick="window.print()" class="btn-primary"
+                style="display:flex; align-items:center; gap:8px; color: var(--doc-primary); font-weight: 600; font-size: 13px; cursor: pointer; padding: 8px 16px; border: 1px solid #bfdbfe; border-radius: 8px; background: #eff6ff; transition: all 0.2s;">
+                Export PDF
+            </button>
+        </div>
+    </nav>
+
+    <div class="ad-top no-print">
+        <div class="ad-placeholder">Advertisement — 728×90</div>
+    </div>
+
+    <div class="editor-layout">
+        <div class="invoice-container">
+
+            <!-- Header -->
+            <header class="inv-header" style="border-bottom: 1px solid var(--doc-border);">
+                <div>
+                    <input type="file" id="logo-upload" class="no-print" accept="image/*" style="display:none;"
+                        onchange="loadLogo(event)">
+                    <img id="brand-logo" src=""
+                        style="display:none; max-width: 100px; max-height: 100px; margin-bottom: 10px; cursor:pointer;"
+                        onclick="document.getElementById('logo-upload').click()" title="Click to change logo">
+                    <div id="logo-placeholder" class="no-print" onclick="document.getElementById('logo-upload').click()"
+                        style="width: 100px; height: 100px; background: #f8fafc; border: 1px dashed #cbd5e1; display:flex; align-items:center; justify-content:center; cursor:pointer; margin-bottom: 10px; border-radius: 8px;">
+                        <span style="font-size: 12px; color: #64748b; font-weight: 600;">+ Logo</span>
+                    </div>
+                    <h1 style="font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">Billing Details</h1>
+                    <div style="font-size: 13px; color: var(--doc-text-secondary); margin-top: 4px;">
+                        Reference: <div class="editable" contenteditable="true" placeholder="REF-001"
+                            style="display: inline-block; font-weight: 600;"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="editable" contenteditable="true" placeholder="Payment Status"
+                        style="padding: 6px 16px; background: #ecfeff; color: #0891b2; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; text-align: center;">
+                        PENDING</div>
+                </div>
+            </header>
+
+            <!-- Bento Grid -->
+            <section class="bento-grid" style="margin: 0; padding: 24px; background: #f8fafc;">
+                <!-- Bill To -->
+                <div class="bento-card">
+                    <h3>Bill To <span>Client</span></h3>
+                    <div class="info-row"><span class="lbl">Entity</span>
+                        <div class="editable" contenteditable="true" placeholder="Company Name"
+                            style="flex:1; font-weight: 700;"></div>
+                    </div>
+                    <div class="info-row"><span class="lbl" style="color:var(--doc-primary)">TRN/VAT</span>
+                        <div class="editable optional" contenteditable="true" placeholder="Client TRN"
+                            style="flex:1; font-weight: 700;"></div>
+                    </div>
+                    <div class="info-row"><span class="lbl">Contact</span>
+                        <div class="editable optional" contenteditable="true" placeholder="Contact Name"
+                            style="flex:1;"></div>
+                    </div>
+                    <div class="info-row"><span class="lbl">Email</span>
+                        <div class="editable optional" contenteditable="true" placeholder="email@example.com"
+                            style="flex:1;"></div>
+                    </div>
+                </div>
+
+                <!-- Terms & Schedule -->
+                <div class="bento-card">
+                    <h3>Terms & Schedule <span></span></h3>
+                    <div class="info-row"><span class="lbl">Issue Date</span>
+                        <input type="date" class="editable-input" style="font-weight: 600; flex: 1;" id="bill-date">
+                    </div>
+                    <div class="info-row"><span class="lbl">Due Date</span>
+                        <input type="date" class="editable-input" style="font-weight: 600; flex: 1;" id="bill-due">
+                    </div>
+                    <div class="info-row"><span class="lbl">Term</span>
+                        <div class="editable optional" contenteditable="true" placeholder="Net 30"
+                            style="flex:1; font-weight: 600;"></div>
+                    </div>
+                    <div class="info-row"><span class="lbl">Method</span>
+                        <div class="editable optional" contenteditable="true" placeholder="Bank Transfer"
+                            style="flex:1; font-weight: 600;"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bank Details (Full Width Dark Card) -->
+            <section
+                style="margin: 0 24px 24px; padding: 24px; background: var(--doc-text); color: white; border-radius: 16px;">
+                <h3
+                    style="font-size: 13px; text-transform: uppercase; color: #94a3b8; margin-bottom: 18px; letter-spacing: 1px; border-bottom: 1px solid #334155; padding-bottom: 10px;">
+                    Settlement Instructions (Local/International)</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+                    <div>
+                        <small
+                            style="display: block; color: #94a3b8; font-size: 11px; text-transform: uppercase; margin-bottom: 4px;">Bank
+                            Name</small>
+                        <div class="editable" contenteditable="true" placeholder="e.g. Qatar National Bank"
+                            style="color: white; font-family: monospace; font-size: 14px; letter-spacing: 0.5px;"></div>
+                    </div>
+                    <div>
+                        <small
+                            style="display: block; color: #94a3b8; font-size: 11px; text-transform: uppercase; margin-bottom: 4px;">Beneficiary
+                            Name</small>
+                        <div class="editable" id="profile-name" contenteditable="true" placeholder="Your Brand Name"
+                            style="color: white; font-family: monospace; font-size: 14px; letter-spacing: 0.5px;"></div>
+                    </div>
+                    <div>
+                        <small
+                            style="display: block; color: #94a3b8; font-size: 11px; text-transform: uppercase; margin-bottom: 4px;">SWIFT
+                            / BIC</small>
+                        <div class="editable" contenteditable="true" placeholder="SWIFT Code"
+                            style="color: white; font-family: monospace; font-size: 14px; letter-spacing: 0.5px;"></div>
+                    </div>
+                    <div style="grid-column: span 2;">
+                        <small
+                            style="display: block; color: #94a3b8; font-size: 11px; text-transform: uppercase; margin-bottom: 4px;">IBAN
+                            Number</small>
+                        <div class="editable" id="profile-trn" contenteditable="true"
+                            placeholder="QA00 0000 0000 0000 0000 0000"
+                            style="color: white; font-family: monospace; font-size: 14px; letter-spacing: 0.5px;"></div>
+                    </div>
+                    <div>
+                        <small
+                            style="display: block; color: #94a3b8; font-size: 11px; text-transform: uppercase; margin-bottom: 4px;">Currency</small>
+                        <span class="currency-label"
+                            style="color: white; font-family: monospace; font-size: 14px;">QAR</span> / USD
+                    </div>
+                </div>
+            </section>
+
+            <!-- Transaction Table -->
+            <section class="inv-table-section">
+                <table class="inv-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 40%;">Service/Product Description</th>
+                            <th style="width: 10%; text-align: center;">Qty</th>
+                            <th style="width: 15%; text-align: right;">Rate</th>
+                            <th style="width: 10%; text-align: center;">VAT %</th>
+                            <th style="width: 15%; text-align: right;">Total (<span class="currency-label">QAR</span>)
+                            </th>
+                            <th style="width: 40px;" class="no-print"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="items-tbody">
+                        <!-- JS rows -->
+                    </tbody>
+                </table>
+                <button class="add-btn no-print" onclick="addRow()">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                        <path d="M12 5v14M5 12h14"></path>
+                    </svg>
+                    Add Line Item
+                </button>
+            </section>
+
+            <!-- Totals Summary -->
+            <section class="summary-wrapper" style="margin-top: 10px;">
+                <div class="summary-box">
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <div style="display:flex; align-items:center; gap:4px"><span class="currency-label"
+                                style="font-size: 11px; font-weight: 700; color: var(--doc-text-secondary);">QAR</span>
+                            <div class="val" id="sum-subtotal">0.00</div>
+                        </div>
+                    </div>
+                    <div class="summary-row">
+                        <span>Total VAT</span>
+                        <div style="display:flex; align-items:center; gap:4px"><span class="currency-label"
+                                style="font-size: 11px; font-weight: 700; color: var(--doc-text-secondary);">QAR</span>
+                            <div class="val" id="sum-vat">0.00</div>
+                        </div>
+                    </div>
+                    <div class="summary-row total"
+                        style="background: #f8fafc; border-radius: 12px; padding: 15px; margin-top: 10px; color: #0891b2;">
+                        <span>Amount Due</span>
+                        <div style="display:flex; align-items:center; gap:4px"><span class="currency-label"
+                                style="font-size: 12px; font-weight: 700;">QAR</span>
+                            <div class="val" id="sum-total">0.00</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer style="padding: 30px; text-align: center; border-top: 1px solid var(--doc-border);">
+                <div
+                    style="width: 80px; height: 80px; background: #eee; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 10px; color: #aaa;">
+                    E-PAY QR</div>
+                <div class="editable" contenteditable="true" placeholder="Secure Payment Reference: Unique ID"
+                    style="font-size: 13px; font-weight: 600; color: var(--doc-text);"></div>
+                <div class="editable" id="profile-footer" contenteditable="true"
+                    placeholder="Please include the Invoice Reference in your bank transfer remarks."
+                    style="font-size: 12px; color: var(--doc-text-secondary); margin-top: 5px;">
+                    Please include the Invoice Reference in your bank transfer remarks.
+                </div>
+                <div style="margin-top: 25px; font-size: 11px; color: #cbd5e1;">
+                    شكراً لتعاونكم معنا • Thank you for your business
+                </div>
+            </footer>
+
+        </div>
+    </div>
+
+</body>
+
+</html>

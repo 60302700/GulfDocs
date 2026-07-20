@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modern Tax Invoice</title>
+    <style>
+        :root {
+            --primary: #0f172a;
+            --secondary: #64748b;
+            --accent: #3b82f6;
+            --bg: #ffffff;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --success: #22c55e;
+            --bento-bg: #f8fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background: #ffffff;
+            color: var(--primary);
+            line-height: 1.5;
+        }
+
+        /* Container fills the page width without centering margins */
+        .invoice-wrapper {
+            width: 100%;
+            background: var(--card);
+            overflow: hidden;
+        }
+
+        /* --- Header Section --- */
+        .header {
+            padding: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand h1 {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .brand p {
+            color: var(--secondary);
+            font-size: 13px;
+        }
+
+        .invoice-meta {
+            text-align: right;
+        }
+
+        .invoice-meta h2 {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent);
+            margin-bottom: 12px;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: auto auto;
+            gap: 8px 20px;
+            font-size: 13px;
+        }
+
+        .meta-label {
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        /* --- Bento Grid Section --- */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 20px;
+            padding: 30px 40px;
+            background: var(--bento-bg);
+        }
+
+        .bento-card {
+            background: var(--card);
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .bento-card h3 {
+            font-size: 14px;
+            text-transform: uppercase;
+            color: var(--secondary);
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .info-item {
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .info-item b {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* --- Table Section --- */
+        .table-section {
+            padding: 20px 40px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        th {
+            padding: 12px 15px;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--secondary);
+            text-align: left;
+            border-bottom: 2px solid var(--bento-bg);
+        }
+
+        td {
+            padding: 18px 15px;
+            background: #fff;
+            font-size: 14px;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        td:first-child {
+            border-left: 1px solid var(--border);
+            border-radius: 12px 0 0 12px;
+        }
+
+        td:last-child {
+            border-right: 1px solid var(--border);
+            border-radius: 0 12px 12px 0;
+            font-weight: 700;
+        }
+
+        /* --- Summary Section --- */
+        .summary-wrapper {
+            display: flex;
+            justify-content: flex-end;
+            padding: 20px 40px 40px;
+        }
+
+        .summary-box {
+            width: 350px;
+            background: var(--bento-bg);
+            padding: 24px;
+            border-radius: 16px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .summary-row.total {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px dashed var(--border);
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 20px;
+        }
+
+        /* --- Footer Section --- */
+        .footer {
+            padding: 40px;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge {
+            background: var(--success);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .lang-footer {
+            text-align: center;
+            padding: 30px;
+            font-size: 13px;
+            color: var(--secondary);
+            background: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .bento-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .invoice-meta {
+                text-align: left;
+            }
+
+            .summary-box {
+                width: 100%;
+            }
+
+            .footer {
+                flex-direction: column;
+                gap: 30px;
+                text-align: left;
+                align-items: flex-start;
+            }
+        }
+
+        /* Clean printing settings */
+        @media print {
+            body {
+                padding: 0;
+                background: white;
+            }
+
+            .invoice-wrapper {
+                box-shadow: none;
+                border: none;
+            }
+
+            .bento-grid {
+                background: white !important;
+            }
+
+            .bento-card {
+                border: 1px solid #eee !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="invoice-wrapper">
+        <!-- HEADER -->
+        <header class="header">
+            <div class="brand">
+                <h1>{Brand Name}</h1>
+                <p>{City}, {Country}</p>
+                <p>VAT: {VAT/TRN} | {Email}</p>
+                <p>Phone: {Phone}</p>
+            </div>
+            <div class="invoice-meta">
+                <h2>Tax Invoice</h2>
+                <div class="meta-grid">
+                    <span class="meta-label">Invoice</span> <span>#{Invoice #}</span>
+                    <span class="meta-label">Date</span> <span>{Date}</span>
+                    <span class="meta-label">Order ID</span> <span>{Order ID}</span>
+                    <span class="meta-label">Time</span> <span>{Time}</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- BENTO INFO CARDS -->
+        <section class="bento-grid">
+            <div class="bento-card">
+                <h3>Customer Details</h3>
+                <div class="info-item"><b>{Name}</b></div>
+                <div class="info-item">{Phone}</div>
+                <div class="info-item">{Email}</div>
+                <div class="info-item" style="color:var(--secondary); font-size: 13px; margin-top: 10px;">{Address}
+                </div>
+            </div>
+            <div class="bento-card">
+                <h3>Delivery & Payment</h3>
+                <div class="info-item"><span class="meta-label">Payment:</span> {Payment Method}</div>
+                <div class="info-item"><span class="meta-label">Delivery:</span> {Delivery Type}</div>
+                <div class="info-item"><span class="meta-label">Card Ref:</span> {Card Ref}</div>
+                <div class="info-item"><span class="meta-label">Store:</span> {Store}</div>
+            </div>
+        </section>
+
+        <!-- PRODUCT TABLE -->
+        <section class="table-section">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product Description</th>
+                        <th>SKU</th>
+                        <th>Qty</th>
+                        <th>Unit Price</th>
+                        <th>VAT</th>
+                        <th style="text-align:right">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div style="font-weight: 700; margin-bottom: 4px;">{Product}</div>
+                            <div style="font-size: 12px; color: var(--secondary);">Pack: {PK}</div>
+                        </td>
+                        <td>{SKU}</td>
+                        <td>{Qty}</td>
+                        <td>{Unit Price}</td>
+                        <td>{VAT}</td>
+                        <td style="text-align:right">{Total}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- SUMMARY SECTION -->
+        <section class="summary-wrapper">
+            <div class="summary-box">
+                <div class="summary-row"><span>Subtotal</span> <span>{Subtotal}</span></div>
+                <div class="summary-row"><span>VAT (5%)</span> <span>{VAT}</span></div>
+                <div class="summary-row"><span>Delivery Fee</span> <span>{Delivery Fee}</span></div>
+                <div class="summary-row" style="color:var(--success); font-weight: 600;"><span>Discount</span>
+                    <span>-{Discount}</span>
+                </div>
+                <div class="summary-row total"><span>Grand Total</span> <span>{Grand Total}</span></div>
+            </div>
+        </section>
+
+        <!-- FOOTER DARK BLOCK -->
+        <footer class="footer">
+            <div>
+                <div
+                    style="opacity:0.6; font-size:11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">
+                    Order Status</div>
+                <span class="badge">{Order Status}</span>
+            </div>
+            <div style="text-align:right">
+                <p style="font-size:14px; font-weight:600; margin-bottom: 4px;">{Compliance}</p>
+                <div style="font-size:12px; opacity:0.6;">
+                    Warehouse: {Warehouse} | Source: {Source}<br>
+                    Store ID: {Store ID} | Shipment: {Shipment Type}
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- RTL THANK YOU -->
+    <div class="lang-footer">
+        شكراً لتسوقكم معنا • Thank you for shopping with us
+    </div>
+
+</body>
+
+</html>

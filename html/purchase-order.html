@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Corporate Purchase Order - GCC Standard</title>
+    <style>
+        :root {
+            --primary: #1e293b;
+            /* Deep Navy Corporate */
+            --secondary: #64748b;
+            --accent: #0284c7;
+            /* Professional Blue */
+            --border: #e2e8f0;
+            --bento-bg: #f8fafc;
+            --success: #059669;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+        }
+
+        body {
+            background: #ffffff;
+            color: var(--primary);
+            line-height: 1.4;
+        }
+
+        .po-wrapper {
+            width: 100%;
+            background: #fff;
+        }
+
+        /* --- Header --- */
+        .header {
+            padding: 40px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 4px solid var(--primary);
+        }
+
+        .company-logo h1 {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: -1px;
+        }
+
+        .company-details {
+            font-size: 13px;
+            color: var(--secondary);
+            margin-top: 8px;
+        }
+
+        .po-title-block {
+            text-align: right;
+        }
+
+        .po-title-block h2 {
+            font-size: 32px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .meta-table {
+            font-size: 13px;
+            margin-left: auto;
+        }
+
+        .meta-table td {
+            padding: 3px 10px;
+        }
+
+        .label {
+            font-weight: 700;
+            color: var(--secondary);
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        /* --- Bento Info Sections --- */
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            padding: 30px 40px;
+            background: var(--bento-bg);
+        }
+
+        .info-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .info-card h3 {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent);
+            margin-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        .address-text {
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .address-text b {
+            color: var(--primary);
+        }
+
+        /* --- Items Table --- */
+        .items-section {
+            padding: 30px 40px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--primary);
+            color: #fff;
+            text-align: left;
+            padding: 12px 15px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        .sku-cell {
+            font-size: 12px;
+            color: var(--secondary);
+            font-family: monospace;
+        }
+
+        /* --- Footer/Totals --- */
+        .bottom-section {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            padding: 0 40px 40px;
+            gap: 40px;
+        }
+
+        .terms-box {
+            font-size: 12px;
+            color: var(--secondary);
+            background: var(--bento-bg);
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .terms-box h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .totals-table {
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .totals-table td {
+            border: none;
+            padding: 8px 0;
+        }
+
+        .grand-total-row {
+            border-top: 2px solid var(--primary) !important;
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--primary);
+        }
+
+        /* --- Signatures --- */
+        .signature-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 100px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .sig-line {
+            border-top: 1px solid var(--primary);
+            padding-top: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+        }
+
+        .stamp-box {
+            height: 80px;
+            width: 80px;
+            border: 2px dashed #cbd5e1;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #cbd5e1;
+            font-size: 10px;
+            border-radius: 50%;
+        }
+
+        @media print {
+            .po-wrapper {
+                width: 100%;
+            }
+
+            body {
+                -webkit-print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="po-wrapper">
+        <!-- HEADER -->
+        <header class="header">
+            <div class="company-logo">
+                <h1>{Buyer Company Name}</h1>
+                <div class="company-details">
+                    {PO Box}, {City}, {Country}<br>
+                    <b>TRN: {Buyer Tax Registration #}</b><br>
+                    Contact: {Buyer Phone} | {Buyer Email}
+                </div>
+            </div>
+            <div class="po-title-block">
+                <h2>PURCHASE ORDER</h2>
+                <table class="meta-table">
+                    <tr>
+                        <td class="label">P.O. Number:</td>
+                        <td><b>{PO #}</b></td>
+                    </tr>
+                    <tr>
+                        <td class="label">Date:</td>
+                        <td>{Date}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Delivery Date:</td>
+                        <td>{Expected Date}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Currency:</td>
+                        <td>QAR</td>
+                    </tr>
+                </table>
+            </div>
+        </header>
+
+        <!-- INFO GRID -->
+        <section class="details-grid">
+            <div class="info-card">
+                <h3>Vendor Information</h3>
+                <div class="address-text">
+                    <b>{Vendor Name}</b><br>
+                    {Vendor Address}<br>
+                    {Vendor Contact Person}<br>
+                    TRN: {Vendor TRN #}<br>
+                    Phone: {Vendor Phone}
+                </div>
+            </div>
+            <div class="info-card">
+                <h3>Ship To</h3>
+                <div class="address-text">
+                    <b>{Warehouse Name}</b><br>
+                    {Warehouse Address}<br>
+                    Attn: {Receiver Name}<br>
+                    Contact: {Receiver Phone}
+                </div>
+            </div>
+            <div class="info-card">
+                <h3>Shipping & Terms</h3>
+                <div class="address-text">
+                    <span class="label">Incoterms:</span> {e.g. DDP / Ex-Works}<br>
+                    <span class="label">Shipping Via:</span> {Carrier Name}<br>
+                    <span class="label">Payment:</span> {e.g. Net 30 Days}<br>
+                    <span class="label">PR Ref:</span> {Requisition #}
+                </div>
+            </div>
+        </section>
+
+        <!-- ITEMS TABLE -->
+        <section class="items-section">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Description / Specification</th>
+                        <th>SKU / Part #</th>
+                        <th>Qty</th>
+                        <th>Unit Price</th>
+                        <th>VAT %</th>
+                        <th style="text-align:right">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td><b>{Item Name}</b><br><small style="color:var(--secondary)">{Full technical specification or
+                                color/size}</small></td>
+                        <td class="sku-cell">{SKU #}</td>
+                        <td>{Qty}</td>
+                        <td>{Unit Price}</td>
+                        <td>5%</td>
+                        <td style="text-align:right"><b>{Line Total}</b></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- FOOTER MATH -->
+        <section class="bottom-section">
+            <div class="terms-box">
+                <h4>Terms & Conditions</h4>
+                <ol style="padding-left: 15px;">
+                    <li>Please include the P.O. number on all shipping documents and invoices.</li>
+                    <li>All goods must be delivered in accordance with GCC VAT regulations.</li>
+                    <li>Items must be original and as per specifications mentioned above.</li>
+                    <li>This order is subject to the buyer's standard terms and conditions.</li>
+                </ol>
+            </div>
+            <div>
+                <table class="totals-table">
+                    <tr>
+                        <td>Subtotal</td>
+                        <td style="text-align:right">{Subtotal}</td>
+                    </tr>
+                    <tr>
+                        <td>VAT (5%)</td>
+                        <td style="text-align:right">{Total VAT}</td>
+                    </tr>
+                    <tr>
+                        <td>Freight / Insurance</td>
+                        <td style="text-align:right">{Fees}</td>
+                    </tr>
+                    <tr class="grand-total-row">
+                        <td>TOTAL QAR</td>
+                        <td style="text-align:right">{Grand Total}</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <!-- OFFICIAL SIGN-OFF -->
+        <section class="signature-section">
+            <div>
+                <div class="stamp-box">VENDOR STAMP</div>
+                <div class="sig-line">Authorized Vendor Signature</div>
+            </div>
+            <div>
+                <div class="stamp-box">COMPANY STAMP</div>
+                <div class="sig-line">Approved By (Purchasing Manager)</div>
+            </div>
+        </section>
+    </div>
+
+</body>
+
+</html>

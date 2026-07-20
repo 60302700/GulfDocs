@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Payslip - Full Width GCC Standard</title>
+    <style>
+        :root {
+            --primary: #0f172a;
+            --secondary: #64748b;
+            --accent: #4f46e5;
+            --border: #e2e8f0;
+            --bg-light: #f8fafc;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+        }
+
+        body {
+            background: #ffffff;
+            color: var(--primary);
+            line-height: 1.5;
+        }
+
+        .payslip-wrapper {
+            width: 100%;
+            min-height: 100vh;
+            background: white;
+        }
+
+        .header {
+            padding: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 5px solid var(--primary);
+        }
+
+        .brand h1 {
+            font-size: 24px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+        }
+
+        .brand p {
+            font-size: 13px;
+            color: var(--secondary);
+            margin-top: 4px;
+        }
+
+        .payslip-title {
+            text-align: right;
+        }
+
+        .payslip-title h2 {
+            font-size: 32px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            color: var(--primary);
+        }
+
+        .payslip-title p {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-top: 5px;
+        }
+
+        .info-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            background: var(--bg-light);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .info-box {
+            padding: 25px 40px;
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .info-box small {
+            display: block;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--secondary);
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+
+        .info-box span {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 400px;
+        }
+
+        .column {
+            padding: 50px 40px;
+        }
+
+        .earnings-col {
+            border-right: 1px solid var(--border);
+        }
+
+        .column h3 {
+            font-size: 14px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--primary);
+            display: flex;
+            justify-content: space-between;
+            letter-spacing: 1px;
+        }
+
+        .entry {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            font-size: 15px;
+        }
+
+        .entry .label {
+            color: var(--secondary);
+        }
+
+        .entry .amount {
+            font-weight: 700;
+        }
+
+        .net-pay-section {
+            padding: 50px 40px;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .net-pay-info .label {
+            font-size: 14px;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .net-pay-info .wps-note {
+            font-size: 12px;
+            opacity: 0.5;
+            font-style: italic;
+        }
+
+        .net-amount {
+            font-size: 48px;
+            font-weight: 900;
+        }
+
+        .totals-bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: var(--bg-light);
+            border-top: 1px solid var(--border);
+        }
+
+        .total-box {
+            padding: 30px 40px;
+        }
+
+        .total-box span {
+            font-size: 13px;
+            color: var(--secondary);
+            text-transform: uppercase;
+        }
+
+        .total-box h4 {
+            font-size: 22px;
+            color: var(--primary);
+            margin-top: 5px;
+        }
+
+        .footer {
+            padding: 40px;
+            font-size: 13px;
+            color: var(--secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            background: white;
+        }
+
+        .footer-note {
+            max-width: 500px;
+            line-height: 1.6;
+        }
+
+        .signature-box {
+            text-align: center;
+            width: 250px;
+        }
+
+        .sig-line {
+            border-top: 1px solid var(--primary);
+            margin-top: 60px;
+            padding-top: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 900px) {
+
+            .main-grid,
+            .totals-bar,
+            .header,
+            .net-pay-section {
+                grid-template-columns: 1fr;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 30px;
+            }
+
+            .payslip-title,
+            .net-amount {
+                text-align: left;
+            }
+
+            .earnings-col {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+        }
+
+        @media print {
+            .payslip-wrapper {
+                border: none;
+            }
+
+            .net-pay-section {
+                background: #000 !important;
+                color: #fff !important;
+                -webkit-print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="payslip-wrapper">
+        <!-- HEADER -->
+        <header class="header">
+            <div class="brand">
+                <h1>{{companyName}}</h1>
+                <p>Qatar Operation | Wage Protection System (WPS) Compliant</p>
+                <p>CR No: {{registrationNumber}} | Doha, Qatar</p>
+            </div>
+            <div class="payslip-title">
+                <h2>PAYSLIP</h2>
+                <p>{{month}} {{year}}</p>
+            </div>
+        </header>
+
+        <!-- EMPLOYEE BENTO INFO -->
+        <section class="info-section">
+            <div class="info-box">
+                <small>Employee Name</small>
+                <span>{{employee.name}}</span>
+            </div>
+            <div class="info-box">
+                <small>Employee ID</small>
+                <span>#{{employee.id}}</span>
+            </div>
+            <div class="info-box">
+                <small>Position</small>
+                <span>{{employee.position}}</span>
+            </div>
+            <div class="info-box">
+                <small>Bank Account / IBAN</small>
+                <span>{{employee.bankName}} - {{employee.iban}}</span>
+            </div>
+            <div class="info-box">
+                <small>Department</small>
+                <span>{{employee.department}}</span>
+            </div>
+            <div class="info-box">
+                <small>Leave Balance</small>
+                <span>{{employee.leaveBalance}} Days Available</span>
+            </div>
+        </section>
+
+        <!-- MAIN FINANCIAL DATA -->
+        <div class="main-grid">
+            <!-- EARNINGS -->
+            <section class="column earnings-col">
+                <h3>Earnings <span>Amount (QAR)</span></h3>
+                {{#each earnings}}
+                <div class="entry">
+                    <span class="label">{{this.item}}</span>
+                    <span class="amount">{{this.amount}}</span>
+                </div>
+                {{/each}}
+            </section>
+
+            <!-- DEDUCTIONS -->
+            <section class="column">
+                <h3>Deductions <span>Amount (QAR)</span></h3>
+                {{#each deductions}}
+                <div class="entry">
+                    <span class="label">{{this.item}}</span>
+                    <span class="amount" style="color:var(--danger)">{{this.amount}}</span>
+                </div>
+                {{/each}}
+            </section>
+        </div>
+
+        <!-- TOTALS CALCULATION -->
+        <div class="totals-bar">
+            <div class="total-box">
+                <span>Gross Salary</span>
+                <h4>QAR {{totalEarnings}}</h4>
+            </div>
+            <div class="total-box">
+                <span>Total Deductions</span>
+                <h4 style="color:var(--danger)">QAR {{totalDeductions}}</h4>
+            </div>
+        </div>
+
+        <!-- NET PAY HERO SECTION -->
+        <section class="net-pay-section">
+            <div class="net-pay-info">
+                <span class="label">Net Payable Amount</span>
+                <p class="wps-note">Funds cleared for WPS electronic transfer</p>
+            </div>
+            <div class="net-amount">QAR {{netPay}}</div>
+        </section>
+
+        <!-- FOOTER & SIGN-OFF -->
+        <footer class="footer">
+            <div class="footer-note">
+                <p><b>Note:</b> This is an official document generated by {{companyName}} payroll system. Please verify
+                    your bank statement for the corresponding WPS credit. For any discrepancies, contact HR within 48
+                    hours.</p>
+                <p style="margin-top: 15px; font-size: 11px; opacity: 0.6;">Generated on: {{generatedDate}} |
+                    {{generatedTime}}</p>
+            </div>
+            <div class="signature-box">
+                <div class="sig-line">Employee Signature</div>
+            </div>
+        </footer>
+    </div>
+
+</body>
+
+</html>

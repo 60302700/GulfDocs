@@ -1,0 +1,23 @@
+[build]
+  publish = "."
+
+# No build command: this is a plain static site (HTML/CSS/JS), nothing to compile.
+# server.js / express / helmet are dev-only conveniences for local testing and are
+# not used in production on Netlify - the headers below are the production
+# equivalent of the CSP that server.js sets via helmet for local dev.
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; script-src-attr 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+# Keep this file in sync with:
+#   - the <meta http-equiv="Content-Security-Policy"> tag in every HTML page
+#   - the helmet() config in server.js (used for local dev only)
+# When Google AdSense is enabled, extend script-src / frame-src / connect-src /
+# img-src here with the required AdSense origins (e.g.
+# https://pagead2.googlesyndication.com, https://googleads.g.doubleclick.net).

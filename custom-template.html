@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom HTML Template Generator | GulfDocs</title>
+    <!-- Fallback CSP for static hosting; keep in sync with the helmet config in server.js -->
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self';">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css">
+    <script src="custom-template.js?v=3" defer></script>
+    <script src="theme-manager.js?v=3" defer></script>
+    <script src="cookie-consent.js" defer></script>
+    <style>
+        /* Custom styles for the split-screen design */
+        .custom-layout {
+            display: flex;
+            width: 100%;
+            height: calc(100vh - 64px - 90px);
+            /* 100vh minus nav and top ad */
+            overflow: hidden;
+            background: #f1f5f9;
+        }
+
+        .sidebar-panel {
+            width: 460px;
+            background: #ffffff;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            flex-shrink: 0;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.02);
+            z-index: 10;
+        }
+
+        .sidebar-header-box {
+            padding: 16px 24px 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-header-box h2 {
+            font-family: 'Sora', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .sidebar-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            background: #f8fafc;
+        }
+
+        .sidebar-tab-btn {
+            flex: 1;
+            padding: 14px;
+            font-weight: 600;
+            font-size: 12px;
+            text-align: center;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            color: var(--text-secondary);
+            border-bottom: 2px solid transparent;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.2s;
+        }
+
+        .sidebar-tab-btn.active {
+            color: var(--accent-blue);
+            border-bottom-color: var(--accent-blue);
+            background: #ffffff;
+        }
+
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        .preview-panel {
+            flex: 1;
+            background: #cbd5e1;
+            padding: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            overflow-y: auto;
+            height: 100%;
+        }
+
+        .preview-container {
+            width: 100%;
+            max-width: 800px;
+            background: #ffffff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
+            min-height: 1130px;
+            /* A4 aspect ratio helper */
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        #preview-iframe {
+            width: 100%;
+            height: 1130px;
+            border: none;
+            background: #ffffff;
+        }
+
+        /* File Upload styling */
+        .upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #f8fafc;
+            margin-bottom: 16px;
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent-blue);
+            background: #eff6ff;
+        }
+
+        .upload-area svg {
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .upload-area.dragover {
+            border-color: var(--accent-emerald);
+            background: #ecfdf5;
+        }
+
+        /* Form styling */
+        .form-section {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        }
+
+        .form-section-header {
+            padding: 12px 16px;
+            background: #f8fafc;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .form-section-header h3 {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-section-header .toggle-icon {
+            font-size: 12px;
+            color: var(--text-secondary);
+            transition: transform 0.2s;
+        }
+
+        .form-section.collapsed .form-section-header .toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .form-section-content {
+            padding: 16px;
+            transition: max-height 0.2s ease-out;
+        }
+
+        .form-section.collapsed .form-section-content {
+            display: none;
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .input-group {
+            margin-bottom: 14px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 13px;
+            color: var(--text-primary);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: #fff;
+        }
+
+        .input-field:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .textarea-field {
+            resize: vertical;
+            min-height: 70px;
+        }
+
+        /* Items list */
+        .item-list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .item-card {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            background: #f8fafc;
+            position: relative;
+        }
+
+        .item-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .item-card-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .item-card-remove {
+            color: #ef4444;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 1;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .item-card-remove:hover {
+            background: #fee2e2;
+        }
+
+        .item-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .item-subgrid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        /* Syntax Guide styling */
+        .syntax-guide {
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+
+        .syntax-intro {
+            margin-bottom: 16px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .syntax-cat {
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .syntax-cat-header {
+            padding: 10px 14px;
+            background: #f8fafc;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .syntax-list {
+            padding: 8px 14px;
+            background: #fff;
+        }
+
+        .syntax-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .syntax-item:last-child {
+            border-bottom: none;
+        }
+
+        .tag-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .tag-name {
+            font-family: monospace;
+            font-weight: 700;
+            color: var(--accent-purple);
+            font-size: 12px;
+            background: #faf5ff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid #f3e8ff;
+            word-break: break-all;
+        }
+
+        .tag-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .btn-copy {
+            background: #f1f5f9;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-copy:hover {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: #ffffff;
+        }
+
+        /* Default Template alert info */
+        .info-card {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 12px;
+            color: #1e3a8a;
+            font-size: 12px;
+            line-height: 1.5;
+            margin-top: 12px;
+        }
+
+        /* Custom buttons */
+        .btn-secondary-custom {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .btn-secondary-custom:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        .btn-primary-custom {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: var(--accent-blue);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .btn-primary-custom:hover {
+            background: #dbeafe;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        .status-badge.yes {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-badge.no {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAV -->
+    <nav class="no-print">
+        <div style="display:flex; align-items:center; gap:16px;">
+            <a href="/" class="logo">GulfDocs<span>.</span></a>
+            <span style="width: 1px; height: 16px; background: var(--doc-border);"></span>
+            <span
+                style="font-size: 11px; font-weight: 700; color: var(--doc-text-secondary); text-transform: uppercase; letter-spacing: 0.1em;">Custom
+                Template Editor</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:16px;">
+            <div
+                style="display:flex; align-items:center; gap:8px; margin-right: 12px; border-right: 1px solid var(--doc-border); padding-right: 16px;">
+                <input type="file" id="import-profile" accept=".json" style="display:none;"
+                    onchange="importBusinessProfile(event)">
+                <button onclick="document.getElementById('import-profile').click()"
+                    style="background:transparent; border:none; font-size:11px; font-weight:700; color:var(--doc-text-secondary); cursor:pointer; text-transform:uppercase;">Import
+                    Profile</button>
+                <button onclick="exportBusinessProfile()"
+                    style="background:transparent; border:none; font-size:11px; font-weight:700; color:var(--doc-text-secondary); cursor:pointer; text-transform:uppercase;">Export
+                    JSON</button>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <label for="currency-select"
+                    style="font-size: 11px; font-weight: 700; color: var(--doc-text-secondary); text-transform: uppercase;">Currency:</label>
+                <select id="currency-select" onchange="updateCurrency()"
+                    style="padding: 6px 12px; border-radius: 6px; border: 1px solid var(--doc-border); font-family: inherit; font-size: 12px; font-weight: 700; outline: none; background: #f8fafc; cursor: pointer;">
+                    <option value="QAR">QAR (Qatari Riyal)</option>
+                    <option value="AED">AED (UAE Dirham)</option>
+                    <option value="SAR">SAR (Saudi Riyal)</option>
+                    <option value="OMR">OMR (Omani Rial)</option>
+                    <option value="BHD">BHD (Bahraini Dinar)</option>
+                    <option value="KWD">KWD (Kuwaiti Dinar)</option>
+                    <option value="USD">USD (US Dollar)</option>
+                </select>
+            </div>
+            <button onclick="printIframe()" class="btn-primary" style="display:flex; align-items:center; gap:8px;
+                color: var(--doc-primary);
+                font-weight: 600;
+                font-size: 13px;
+                cursor: pointer;
+                padding: 8px 16px;
+                border: 1px solid #bfdbfe;
+                border-radius: 8px;
+                background: #eff6ff;
+                transition: all 0.2s;">
+                Export PDF
+            </button>
+        </div>
+    </nav>
+
+    <!-- AD TOP -->
+    <div class="ad-top no-print">
+        <div class="ad-placeholder">Advertisement — 728×90</div>
+    </div>
+
+    <!-- MAIN CUSTOM SPLIT LAYOUT -->
+    <div class="custom-layout">
+
+        <!-- LEFT SIDEBAR PANEL -->
+        <aside class="sidebar-panel">
+
+            <div class="sidebar-tabs">
+                <button class="sidebar-tab-btn active" onclick="switchTab('tab-data')">Document Data</button>
+                <button class="sidebar-tab-btn" onclick="switchTab('tab-template')">Template &amp; Syntax</button>
+            </div>
+
+            <!-- SIDEBAR CONTENT -->
+            <div class="sidebar-content">
+
+                <!-- TAB 1: DOCUMENT DATA FIELDS -->
+                <div id="tab-data" class="tab-pane active">
+
+                    <!-- SECTION: BUSINESS DETAILS -->
+                    <div class="form-section">
+                        <div class="form-section-header" onclick="toggleSection(this)">
+                            <h3>💼 Business / Sender Info</h3>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="form-section-content">
+                            <div class="input-group">
+                                <label class="input-label" for="logo-file">Business Logo</label>
+                                <input type="file" id="logo-file" accept="image/*" class="input-field"
+                                    onchange="uploadLogo(event)">
+                                <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px;">
+                                    <div id="logo-preview-badge"
+                                        style="display: none; width: 40px; height: 40px; border-radius: 4px; overflow: hidden; border: 1px solid var(--border);">
+                                        <img id="logo-preview-img" src=""
+                                            style="width: 100%; height: 100%; object-fit: contain;">
+                                    </div>
+                                    <span id="logo-preview-text"
+                                        style="font-size: 12px; color: var(--text-secondary);">No logo uploaded (falls
+                                        back to placeholder)</span>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label class="input-label" for="company-name">Company Name</label>
+                                <input type="text" id="company-name" class="input-field"
+                                    placeholder="Al Noor Trading LLC" oninput="updateDocumentPreview()">
+                            </div>
+                            <div class="input-group">
+                                <label class="input-label" for="company-trn">Tax Registration / TRN / VAT</label>
+                                <input type="text" id="company-trn" class="input-field" placeholder="100234567890003"
+                                    oninput="updateDocumentPreview()">
+                            </div>
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label class="input-label" for="company-phone">Company Phone</label>
+                                    <input type="text" id="company-phone" class="input-field"
+                                        placeholder="+971 4 234 5678" oninput="updateDocumentPreview()">
+                                </div>
+                                <div class="input-group">
+                                    <label class="input-label" for="company-email">Company Email</label>
+                                    <input type="email" id="company-email" class="input-field"
+                                        placeholder="sales@alnoortrading.ae" oninput="updateDocumentPreview()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION: DOCUMENT PROPERTIES -->
+                    <div class="form-section">
+                        <div class="form-section-header" onclick="toggleSection(this)">
+                            <h3>📄 Document Info</h3>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="form-section-content">
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label class="input-label" for="doc-title">Document Title</label>
+                                    <input type="text" id="doc-title" class="input-field" placeholder="TAX INVOICE"
+                                        value="TAX INVOICE" oninput="updateDocumentPreview()">
+                                </div>
+                                <div class="input-group">
+                                    <label class="input-label" for="doc-number">Document No #</label>
+                                    <input type="text" id="doc-number" class="input-field" placeholder="INV-2026-001"
+                                        value="INV-2026-001" oninput="updateDocumentPreview()">
+                                </div>
+                            </div>
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label class="input-label" for="doc-date">Issue Date</label>
+                                    <input type="date" id="doc-date" class="input-field"
+                                        onchange="updateDocumentPreview()">
+                                </div>
+                                <div class="input-group">
+                                    <label class="input-label" for="doc-due-date">Due Date</label>
+                                    <input type="date" id="doc-due-date" class="input-field"
+                                        onchange="updateDocumentPreview()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION: CLIENT / BILL TO -->
+                    <div class="form-section">
+                        <div class="form-section-header" onclick="toggleSection(this)">
+                            <h3>👤 Client / Bill To</h3>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="form-section-content">
+                            <div class="input-group">
+                                <label class="input-label" for="client-name">Client Name</label>
+                                <input type="text" id="client-name" class="input-field"
+                                    placeholder="Mohammed Al Rashidi" oninput="updateDocumentPreview()">
+                            </div>
+                            <div class="input-group">
+                                <label class="input-label" for="client-trn">Client TRN / VAT</label>
+                                <input type="text" id="client-trn" class="input-field"
+                                    placeholder="Customer TRN (Optional)" oninput="updateDocumentPreview()">
+                            </div>
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label class="input-label" for="client-phone">Client Phone</label>
+                                    <input type="text" id="client-phone" class="input-field"
+                                        placeholder="+974 5512 3344" oninput="updateDocumentPreview()">
+                                </div>
+                                <div class="input-group">
+                                    <label class="input-label" for="client-email">Client Email</label>
+                                    <input type="email" id="client-email" class="input-field"
+                                        placeholder="m.rashidi@example.com" oninput="updateDocumentPreview()">
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label class="input-label" for="client-address">Client Shipping/Billing Address</label>
+                                <textarea id="client-address" class="input-field textarea-field"
+                                    placeholder="Villa 14, Al Waab Street, Doha, Qatar"
+                                    oninput="updateDocumentPreview()"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION: LINE ITEMS -->
+                    <div class="form-section">
+                        <div class="form-section-header" onclick="toggleSection(this)">
+                            <h3>🛒 Line Items</h3>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="form-section-content">
+                            <div id="items-list-container" class="item-list-container">
+                                <!-- item cards loaded by javascript -->
+                            </div>
+                            <button type="button" class="btn-primary-custom"
+                                style="margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;"
+                                onclick="addSidebarRow()">
+                                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"
+                                    viewBox="0 0 24 24">
+                                    <path d="M12 5v14M5 12h14" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                                Add Line Item
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- SECTION: FINANCIALS & TAXES -->
+                    <div class="form-section">
+                        <div class="form-section-header" onclick="toggleSection(this)">
+                            <h3>💰 Taxes &amp; Discount</h3>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="form-section-content">
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label class="input-label" for="doc-vat-rate">VAT Rate (%)</label>
+                                    <input type="number" id="doc-vat-rate" class="input-field" placeholder="5" value="5"
+                                        min="0" max="100" oninput="updateDocumentPreview()">
+                                </div>
+                                <div class="input-group">
+                                    <label class="input-label" for="doc-discount">Discount Amount</label>
+                                    <input type="number" id="doc-discount" class="input-field" placeholder="0.00"
+                                        value="0" min="0" oninput="updateDocumentPreview()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION: FOOTER NOTES -->
+                    <div class="form-section">
+                        <div class="form-section-header" onclick="toggleSection(this)">
+                            <h3>📝 Footnotes &amp; Terms</h3>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="form-section-content">
+                            <div class="input-group">
+                                <label class="input-label" for="doc-notes">Terms and Conditions / Footnotes</label>
+                                <textarea id="doc-notes" class="input-field textarea-field"
+                                    placeholder="Thank you for your business. | شكراً لتعاملكم معنا"
+                                    oninput="updateDocumentPreview()"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- TAB 2: TEMPLATE UPLOAD & SYNTAX -->
+                <div id="tab-template" class="tab-pane">
+
+                    <div class="upload-area" id="drop-zone" onclick="document.getElementById('template-file').click()">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="17 8 12 3 7 8" />
+                            <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg>
+                        <p style="font-size: 13px; font-weight:600; color: var(--text-primary); margin-bottom: 4px;">
+                            Drag &amp; Drop HTML Template</p>
+                        <p style="font-size: 11px; color: var(--text-secondary);">or click to browse your computer</p>
+                        <input type="file" id="template-file" accept=".html,.htm" style="display:none;"
+                            onchange="handleTemplateUpload(event)">
+                    </div>
+
+                    <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+                        <button class="btn-secondary-custom" onclick="loadDefaultTemplate()">Load Default
+                            Template</button>
+                        <button class="btn-secondary-custom" style="color: #ef4444;" onclick="resetTemplate()">Clear
+                            Custom Template</button>
+                    </div>
+
+                    <a href="/template-guide.html" target="_blank" rel="noopener"
+                        style="display:flex; align-items:center; justify-content:center; gap:8px; background:#faf5ff; border:1px solid #f3e8ff; color:var(--accent-purple); padding:10px 16px; border-radius:8px; font-size:13px; font-weight:700; text-decoration:none; margin-bottom:20px;">
+                        📖 Full Guide: How to Build a Custom Template
+                    </a>
+
+                    <div class="form-section" style="padding: 14px; margin-bottom: 20px;">
+                        <h4 style="font-size:12px; font-weight:700; text-transform:uppercase; margin-bottom: 8px;">
+                            Template Status</h4>
+                        <div style="font-size: 12px; display: flex; flex-direction:column; gap:4px;">
+                            <div>Status: <span id="template-status-badge" class="status-badge no">Inactive</span></div>
+                            <div>File loaded: <strong id="template-filename-label">-</strong></div>
+                        </div>
+                    </div>
+
+                    <!-- SYNTAX CHEAT SHEET Accordion -->
+                    <div class="syntax-guide">
+                        <div class="syntax-intro">
+                            Create your own HTML document layout offline. Use standard inline styles or native CSS. Put
+                            the double curly placeholders below anywhere in your HTML code, and our engine will target
+                            and render them recursively. New to this? Read the
+                            <a href="/template-guide.html" target="_blank" rel="noopener"
+                                style="color: var(--accent-blue); font-weight: 700;">full template-building guide</a>.
+                        </div>
+
+                        <!-- Business -->
+                        <div class="syntax-cat">
+                            <div class="syntax-cat-header">Business Info</div>
+                            <div class="syntax-list">
+                                <div class="syntax-item">
+                                    <div class="tag-info">
+                                        <span class="tag-name">{{company_logo}}</span>
+                                        <span class="tag-desc">Base64 logo (use as: &lt;img
+                                            src="{{company_logo}}"&gt;)</span>
+                                    </div>
+                                    <button class="btn-copy" onclick="copyText('{{company_logo}}')">Copy</button>
+                                </div>
+                                <div class="syntax-item">
+                                    <div class="tag-info">
+                                        <span class="tag-name">{{company_name}}</span>
+                                        <span class="tag-desc">Your company Name</span>
+                                    </div>
+                                    <button class="btn-copy" onclick="copyText('{{company_name}}')">Copy</button>
+                                </div>
+                                <div class="syntax-item">
+                                    <div class="tag-info">
+                                        <span class="tag-name">{{company_trn}}</span>
+                                        <span class="tag-desc">VAT / TRN Registration #</span>
+                                    </div>
+                                    <button class="btn-copy" onclick="copyText('{{company_trn}}')">Copy</button>
+                                </div>
+                                <div class="syntax-item">
+                                    <div class="tag-info">
+                                        <span class="tag-name">{{company_phone}}</span>
+                                        <span class="tag-desc">Your business phone</span>
+                                    </div>
+                                    <button class="btn-copy" onclick="copyText('{{company_phone}}')">Copy</button>
+                                </div>
+                                <div class="syntax-item">
+                                    <div class="tag-info">
+                                        <span class="tag-name">{{company_email}}</span>
+                                        <span class="tag-desc">Your business email</span>
+                                    </div>
+                                    <button class="btn-copy" onclick="copyText('{{company_email}}')">Copy</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Document Meta -->
+                        <div class="syntax-cat">
+                            <div class="syntax-cat-header">Document Meta Details</div>
+                            <div class="syntax-list">
+                                <div class="syntax-item">
+                                    <div class="tag-info">
+                                        <span class="tag-name">{{document_title}}</span>
+                                        <span class="tag-desc">e.g., TAX INVOICE or QUOTATION</span>
+                                    </div>
+                                    <button class="btn-copy" onclick="copyText('{{document_title}}')">Copy</button>
+                                </div>
+                                <div class="syntax-item">
+                                    <div class="tag-info">
+                                        <span class="tag-name">{{document_number}}</span>
+                                        <span class="tag-desc">The reference number #</span>
+                                    </div>
+                                    <button class="btn-copy" onclick="copyText('{{document_number}}')">Copy</button>
+                                </div>
+                                <div class="syntax-item">
+                                    <div class="tag-info">
+                                        <span class="tag-name">{{document_date}}</span>
+                                        <span class="tag-desc">Issue Date</span>
+                                    </div>
+                                    <button class="btn-copy" onclick="copyText('{{document_date}}')">Copy</button>
+                                </div>
+                                <div class="syntax-item">
+                                    <div class="tag-info">
+                                        <span class="tag-name">{{document_due_date}}</span>
+                                        <span class="tag-desc">Due Date</span>
+                                    </div>
+                                    <button class="btn-copy" onclick="copyText('{{document_due_date}}')">Copy</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Client Info -->
+                        <div class="syntax-cat">
+                            <div class="syntax-cat-header">Client Details</div>
+                            <div class="syntax-list">
+                                <div class="syntax-item">
+                                    <div class="tag-info">
+                                        <span class="tag-name{{client_name}}">{{client_name}}</span>
+                                        <span class="tag-desc">Client/Customer name</span>
+                                    </div>
+                                    <button class="btn-copy" onclick="copyText('{{client_name}}')">Copy</button>
+                                </div>
+                                <div class="syntax-item">
+                                    <div class="tag-info">
+                                        <span class="tag-name">{{client_trn}}</span>
+                                        <span class="tag-desc">Client TRN / VAT Registration</span>
+                                    </div>
+                                    <button class="btn-copy" onclick="copyText('{{client_trn}}')">Copy</button>
+                                </div>
+                                <div class="syntax-item">
+                                    <div class="tag-info">
+                                        <span class="tag-name">{{client_phone}}</span>
+                                        <span class="tag-desc">Client contact phone</span>
+                                    </div>
+                                    <button class="btn-copy" onclick="copyText('{{client_phone}}')">Copy</button>
+                                </div>
+                                <div class="syntax-item">
+                                    <div class="tag-info">
+                                        <span class="tag-name">{{client_email}}</span>
+                                        <span class="tag-desc">Client email address</span>
+                                    </div>
+                                    <button class="btn-copy" onclick="copyText('{{client_email}}')">Copy</button>
+                                </div>
+                                <div class="syntax-item">
+                                    <div class="tag-info">
+                                        <span class="tag-name">{{client_address}}</span>
+                                        <span class="tag-desc">Client billing/shipping address</span>
+                                    </div>
+                                    <button class="btn-copy" onclick="copyText('{{client_address}}')">Copy</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Line Items -->
+                        <div class="syntax-cat">
+                            <div class="syntax-cat-header">Line Items Table Repeating Loop</div>
+                            <div class="syntax-list">
+                                <div
+                                    style="font-size: 11px; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.4;">
+                                    Wrap your row elements inside <code>{{#items}}</code> block. Our target engine
+                                    repeats this segment for each item cards.
+                                </div>
+                                <div class="syntax-item"
+                                    style="flex-direction: column; align-items: flex-start; gap: 6px;">
+                                    <div class="tag-info">
+                                        <span class="tag-name"
+                                            style="white-space: pre-wrap; display: block; line-height: 1.4;">{{#items}}
+                                            &lt;tr&gt;
+                                            &lt;td&gt;{{item_index}}&lt;/td&gt;
+                                            &lt;td&gt;{{item_description}}&lt;/td&gt;
+                                            &lt;td&gt;{{item_sku}}&lt;/td&gt;
+                                            &lt;td&gt;{{item_qty}}&lt;/td&gt;
+                                            &lt;td&gt;{{item_price}}&lt;/td&gt;
+                                            &lt;td&gt;{{item_total}}&lt;/td&gt;
+                                            &lt;/tr&gt;
+                                            {{/items}}</span>
+                                        <span class="tag-desc" style="margin-top: 4px;">Dynamic Repeating row block
+                                            syntax</span>
+                                    </div>
+                                    <button class="btn-copy"
+                                        onclick="copyText('{{#items}}\n&lt;tr&gt;\n  &lt;td&gt;{{item_index}}&lt;/td&gt;\n  &lt;td&gt;{{item_description}}&lt;/td&gt;\n  &lt;td&gt;{{item_sku}}&lt;/td&gt;\n  &lt;td&gt;{{item_qty}}&lt;/td&gt;\n  &lt;td&gt;{{item_price}}&lt;/td&gt;\n  &lt;td&gt;{{item_total}}&lt;/td&gt;\n&lt;/tr&gt;\n{{/items}}')">Copy
+                                        Loop Block</button>
+                                </div>
+                                <div class="syntax-item">
+                                    <div class="tag-info">
+                                        <span class="tag-name">{{items_table}}</span>
+                                        <span class="tag-desc">No time? Just paste this for a quick pre-built
+                                            table.</span>
+                                    </div>
+                                    <button class="btn-copy" onclick="copyText('{{items_table}}')">Copy Tag</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Financials -->
+                        <div class="syntax-cat">
+                            <div class="syntax-cat-header">Financials &amp; Totals</div>
+                            <div class="syntax-list">
+                                <div class="syntax-item">
+                                    <div class="tag-info">
+                                        <span class="tag-name">{{currency}}</span>
+                                        <span class="tag-desc">Selected currency code (QAR, AED, etc.)</span>
+                                    </div>
+                                    <button class="btn-copy" onclick="copyText('{{currency}}')">Copy</button>
+                                </div>
+                                <div class="syntax-item">
+                                    <div class="tag-info">
+                                        <span class="tag-name">{{subtotal}}</span>
+                                        <span class="tag-desc">Subtotal sum before VAT/Discount</span>
+                                    </div>
+                                    <button class="btn-copy" onclick="copyText('{{subtotal}}')">Copy</button>
+                                </div>
+                                <div class="syntax-item">
+                                    <div class="tag-info">
+                                        <span class="tag-name">{{vat_rate}}</span>
+                                        <span class="tag-desc">The tax rate percentage number</span>
+                                    </div>
+                                    <button class="btn-copy" onclick="copyText('{{vat_rate}}')">Copy</button>
+                                </div>
+                                <div class="syntax-item">
+                                    <div class="tag-info">
+                                        <span class="tag-name">{{vat_amount}}</span>
+                                        <span class="tag-desc">Calculated VAT tax value</span>
+                                    </div>
+                                    <button class="btn-copy" onclick="copyText('{{vat_amount}}')">Copy</button>
+                                </div>
+                                <div class="syntax-item">
+                                    <div class="tag-info">
+                                        <span class="tag-name">{{discount}}</span>
+                                        <span class="tag-desc">Discount amount</span>
+                                    </div>
+                                    <button class="btn-copy" onclick="copyText('{{discount}}')">Copy</button>
+                                </div>
+                                <div class="syntax-item">
+                                    <div class="tag-info">
+                                        <span class="tag-name">{{grand_total}}</span>
+                                        <span class="tag-desc">Calculated grand total (Subtotal + VAT - Discount)</span>
+                                    </div>
+                                    <button class="btn-copy" onclick="copyText('{{grand_total}}')">Copy</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="syntax-cat">
+                            <div class="syntax-cat-header">Footnotes &amp; Conditions</div>
+                            <div class="syntax-list">
+                                <div class="syntax-item">
+                                    <div class="tag-info">
+                                        <span class="tag-name">{{notes}}</span>
+                                        <span class="tag-desc">T&amp;C, footnote description</span>
+                                    </div>
+                                    <button class="btn-copy" onclick="copyText('{{notes}}')">Copy</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Conditional tags helper -->
+                        <div class="syntax-cat">
+                            <div class="syntax-cat-header">Conditional Visibility Blocks</div>
+                            <div class="syntax-list">
+                                <div
+                                    style="font-size: 11px; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.4;">
+                                    Hide sections of HTML if a value is empty by wrapping it.
+                                </div>
+                                <div class="syntax-item"
+                                    style="flex-direction: column; align-items: flex-start; gap: 6px;">
+                                    <div class="tag-info">
+                                        <span class="tag-name"
+                                            style="white-space: pre-wrap; display: block; line-height: 1.4;">{{#if
+                                            company_trn}}
+                                            &lt;div class="trn-box"&gt;TRN: {{company_trn}}&lt;/div&gt;
+                                            {{/if}}</span>
+                                        <span class="tag-desc" style="margin-top: 4px;">Only shows block if company_trn
+                                            is set.</span>
+                                    </div>
+                                    <button class="btn-copy"
+                                        onclick="copyText('{{#if company_trn}}\n&lt;div&gt;TRN: {{company_trn}}&lt;/div&gt;\n{{/if}}')">Copy
+                                        Block</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </aside>
+
+        <!-- RIGHT LIVE PREVIEW PANEL -->
+        <main class="preview-panel">
+            <div class="preview-container">
+                <iframe id="preview-iframe" title="Document Live Preview"></iframe>
+            </div>
+        </main>
+
+    </div>
+
+</body>
+
+</html>

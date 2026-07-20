@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>How to Build a Custom HTML Template | GulfDocs</title>
+    <!-- Fallback CSP for static hosting; keep in sync with the helmet config in server.js -->
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self';">
+    <meta name="description"
+        content="Step-by-step guide to building your own HTML document template for GulfDocs, including the full placeholder reference, conditional blocks and repeating line-item loops." />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="cookie-consent.js" defer></script>
+    <style>
+        .guide-wrap {
+            max-width: 880px;
+            margin: 0 auto;
+            padding: 48px 24px 80px;
+        }
+
+        .guide-hero {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .guide-hero h1 {
+            font-family: 'Sora', sans-serif;
+            font-size: 34px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin: 12px 0;
+        }
+
+        .guide-hero p {
+            color: var(--text-secondary);
+            font-size: 15px;
+            max-width: 620px;
+            margin: 0 auto;
+        }
+
+        .guide-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: var(--accent-blue);
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+        .guide-cta:hover {
+            background: #dbeafe;
+        }
+
+        .guide-section {
+            margin-bottom: 44px;
+        }
+
+        .guide-section h2 {
+            font-family: 'Sora', sans-serif;
+            font-size: 21px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .guide-section .step-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--accent-blue);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .guide-section>p {
+            color: var(--text-secondary);
+            font-size: 14.5px;
+            margin-bottom: 14px;
+        }
+
+        .guide-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px 22px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        }
+
+        .guide-card h3 {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .guide-card p {
+            font-size: 13.5px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        pre.code-block {
+            background: #0f172a;
+            color: #e2e8f0;
+            border-radius: 8px;
+            padding: 16px 18px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12.5px;
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+
+        pre.code-block .ph {
+            color: #7dd3fc;
+        }
+
+        pre.code-block .kw {
+            color: #fca5a5;
+        }
+
+        code.inline-code {
+            background: #f1f5f9;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-family: monospace;
+            font-size: 12.5px;
+            color: var(--accent-purple);
+        }
+
+        .ph-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .ph-table th {
+            text-align: left;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            border-bottom: 2px solid var(--border);
+            padding: 8px 10px;
+        }
+
+        .ph-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+
+        .ph-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .ph-tag {
+            font-family: monospace;
+            font-weight: 700;
+            color: var(--accent-purple);
+            white-space: nowrap;
+        }
+
+        .table-scroll {
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            margin-bottom: 16px;
+        }
+
+        .table-scroll .ph-table {
+            margin: 0;
+        }
+
+        .table-scroll .ph-table th:first-child,
+        .table-scroll .ph-table td:first-child {
+            padding-left: 16px;
+        }
+
+        .callout {
+            border-radius: 8px;
+            padding: 14px 16px;
+            font-size: 13px;
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+
+        .callout.info {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1e3a8a;
+        }
+
+        .callout.warn {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            color: #92400e;
+        }
+
+        .toc {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 28px;
+        }
+
+        .toc a {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            border-radius: 20px;
+            text-decoration: none;
+        }
+
+        .toc a:hover {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAV -->
+    <nav>
+        <a href="/" class="logo">GulfDocs<span>.</span></a>
+        <div style="display:flex; align-items:center; gap:16px;">
+            <a href="/custom-template.html"
+                style="font-size:13px; font-weight:700; color:var(--text-secondary); text-decoration:none;">← Back to
+                Template Editor</a>
+        </div>
+    </nav>
+
+    <div class="guide-wrap">
+
+        <div class="guide-hero">
+            <span class="nav-badge blue">Documentation</span>
+            <h1>Build Your Own Document Template</h1>
+            <p>Custom Template lets you drop in any HTML file and GulfDocs will fill it with your business, client
+                and line-item data. This guide explains exactly how the templating engine works and why
+                placeholders are the piece that makes it all possible.</p>
+            <a href="/custom-template.html" class="guide-cta">Open the Template Editor →</a>
+
+            <div class="toc">
+                <a href="#why-placeholders">Why placeholders matter</a>
+                <a href="#getting-started">Getting started</a>
+                <a href="#reference">Placeholder reference</a>
+                <a href="#conditionals">Conditionals</a>
+                <a href="#loops">Repeating items</a>
+                <a href="#theming">Theming</a>
+                <a href="#pitfalls">Common pitfalls</a>
+                <a href="#starter">Starter template</a>
+            </div>
+        </div>
+
+        <!-- WHY PLACEHOLDERS -->
+        <section class="guide-section" id="why-placeholders">
+            <h2><span class="step-badge">?</span> Why placeholders matter</h2>
+            <p>A placeholder is a small marker — written as <code class="inline-code">&#123;&#123;something&#125;&#125;</code>
+                — that you leave inside your raw HTML wherever a real value should eventually appear. You never type
+                "Al Noor Trading LLC" or today's invoice total directly into the template; instead you write
+                <code class="inline-code">&#123;&#123;company_name&#125;&#125;</code> and
+                <code class="inline-code">&#123;&#123;grand_total&#125;&#125;</code>, and the engine swaps them out at
+                render time.</p>
+            <div class="guide-card">
+                <h3>What this buys you</h3>
+                <p><strong>One template, unlimited documents.</strong> The HTML file you upload is a reusable mold —
+                    fill the sidebar form once and every placeholder updates live in the preview, without touching
+                    the template again.</p>
+                <p style="margin-top:8px;"><strong>Design stays separate from data.</strong> You control fonts,
+                    colors, spacing and layout freely in plain HTML/CSS. The engine only ever touches the exact
+                    substrings that match a known placeholder — everything else is left completely alone.</p>
+                <p style="margin-top:8px;"><strong>Nothing leaves your browser.</strong> Because rendering happens by
+                    doing plain text substitution on the template you supplied, no data is uploaded to any server —
+                    the whole process runs client-side.</p>
+            </div>
+            <div class="callout warn">
+                If you skip placeholders and hard-code values instead, your template will just render the same
+                static text every time — the form fields on the left will have nothing to control. Placeholders are
+                what turn a static HTML page into a data-driven document.
+            </div>
+        </section>
+
+        <!-- GETTING STARTED -->
+        <section class="guide-section" id="getting-started">
+            <h2><span class="step-badge">1</span> Getting started</h2>
+            <p>A custom template is just a normal, self-contained HTML file. Follow these steps to build one:</p>
+            <div class="guide-card">
+                <h3>1. Start from a full HTML document</h3>
+                <p>Include <code class="inline-code">&lt;!DOCTYPE html&gt;</code>, a <code
+                        class="inline-code">&lt;head&gt;</code> with your <code class="inline-code">&lt;style&gt;</code>
+                    block, and a <code class="inline-code">&lt;body&gt;</code> with your layout. Everything is
+                    inline CSS or a <code class="inline-code">&lt;style&gt;</code> tag — the template is rendered
+                    inside an isolated iframe/print window, so no external stylesheet other than what you embed will
+                    load.</p>
+            </div>
+            <div class="guide-card">
+                <h3>2. Drop placeholders where data should go</h3>
+                <p>Anywhere inside your markup — inside text, an attribute like <code
+                        class="inline-code">src="&#123;&#123;company_logo&#125;&#125;"</code>, even inside a table
+                    cell — type the placeholder tag from the reference table below.</p>
+            </div>
+            <div class="guide-card">
+                <h3>3. Upload &amp; preview</h3>
+                <p>Go to the <a href="/custom-template.html">Template Editor</a>, open the
+                    <strong>Template &amp; Syntax</strong> tab, and drag your <code class="inline-code">.html</code>
+                    file onto the drop zone (or click it to browse). Switch back to <strong>Document Data</strong>
+                    and start typing — the live preview on the right updates on every keystroke.</p>
+            </div>
+            <div class="guide-card">
+                <h3>4. Export as PDF or save as a profile</h3>
+                <p>Use <strong>Export PDF</strong> to print the finished document. Use <strong>Export JSON</strong>
+                    to save your business details, client info and the custom template itself together in one file
+                    — <strong>Import Profile</strong> restores all three in one click next time.</p>
+            </div>
+        </section>
+
+        <!-- PLACEHOLDER REFERENCE -->
+        <section class="guide-section" id="reference">
+            <h2><span class="step-badge">2</span> Placeholder reference</h2>
+            <p>These are every placeholder the engine understands. Anything typed as
+                <code class="inline-code">&#123;&#123;anything_else&#125;&#125;</code> that isn't on this list is
+                simply removed from the final output, so double-check spelling against this table.</p>
+
+            <h3 style="font-size:13px; text-transform:uppercase; letter-spacing:.5px; color:var(--text-secondary); margin:20px 0 8px;">
+                Business / Sender</h3>
+            <div class="table-scroll">
+                <table class="ph-table">
+                    <tr>
+                        <th>Tag</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td class="ph-tag">&#123;&#123;company_logo&#125;&#125;</td>
+                        <td>Base64 image data — use inside an <code class="inline-code">&lt;img
+                                src="&#123;&#123;company_logo&#125;&#125;"&gt;</code> tag.</td>
+                    </tr>
+                    <tr>
+                        <td class="ph-tag">&#123;&#123;company_name&#125;&#125;</td>
+                        <td>Your business name.</td>
+                    </tr>
+                    <tr>
+                        <td class="ph-tag">&#123;&#123;company_trn&#125;&#125;</td>
+                        <td>Tax Registration / TRN / VAT number.</td>
+                    </tr>
+                    <tr>
+                        <td class="ph-tag">&#123;&#123;company_phone&#125;&#125;</td>
+                        <td>Business phone number.</td>
+                    </tr>
+                    <tr>
+                        <td class="ph-tag">&#123;&#123;company_email&#125;&#125;</td>
+                        <td>Business email address.</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3 style="font-size:13px; text-transform:uppercase; letter-spacing:.5px; color:var(--text-secondary); margin:20px 0 8px;">
+                Document meta</h3>
+            <div class="table-scroll">
+                <table class="ph-table">
+                    <tr>
+                        <th>Tag</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td class="ph-tag">&#123;&#123;document_title&#125;&#125;</td>
+                        <td>e.g. "TAX INVOICE" or "QUOTATION".</td>
+                    </tr>
+                    <tr>
+                        <td class="ph-tag">&#123;&#123;document_number&#125;&#125;</td>
+                        <td>Reference / document number.</td>
+                    </tr>
+                    <tr>
+                        <td class="ph-tag">&#123;&#123;document_date&#125;&#125;</td>
+                        <td>Issue date, formatted (e.g. "14 July 2026").</td>
+                    </tr>
+                    <tr>
+                        <td class="ph-tag">&#123;&#123;document_due_date&#125;&#125;</td>
+                        <td>Due date, formatted the same way.</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3 style="font-size:13px; text-transform:uppercase; letter-spacing:.5px; color:var(--text-secondary); margin:20px 0 8px;">
+                Client / bill to</h3>
+            <div class="table-scroll">
+                <table class="ph-table">
+                    <tr>
+                        <th>Tag</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td class="ph-tag">&#123;&#123;client_name&#125;&#125;</td>
+                        <td>Client / customer name.</td>
+                    </tr>
+                    <tr>
+                        <td class="ph-tag">&#123;&#123;client_trn&#125;&#125;</td>
+                        <td>Client TRN / VAT registration.</td>
+                    </tr>
+                    <tr>
+                        <td class="ph-tag">&#123;&#123;client_phone&#125;&#125;</td>
+                        <td>Client contact phone.</td>
+                    </tr>
+                    <tr>
+                        <td class="ph-tag">&#123;&#123;client_email&#125;&#125;</td>
+                        <td>Client email address.</td>
+                    </tr>
+                    <tr>
+                        <td class="ph-tag">&#123;&#123;client_address&#125;&#125;</td>
+                        <td>Client billing / shipping address.</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3 style="font-size:13px; text-transform:uppercase; letter-spacing:.5px; color:var(--text-secondary); margin:20px 0 8px;">
+                Financials &amp; totals</h3>
+            <div class="table-scroll">
+                <table class="ph-table">
+                    <tr>
+                        <th>Tag</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td class="ph-tag">&#123;&#123;currency&#125;&#125;</td>
+                        <td>Selected currency code (QAR, AED, SAR, OMR, BHD, KWD, USD).</td>
+                    </tr>
+                    <tr>
+                        <td class="ph-tag">&#123;&#123;subtotal&#125;&#125;</td>
+                        <td>Sum of all line items before VAT/discount.</td>
+                    </tr>
+                    <tr>
+                        <td class="ph-tag">&#123;&#123;vat_rate&#125;&#125;</td>
+                        <td>The tax rate, as a plain number (e.g. 5).</td>
+                    </tr>
+                    <tr>
+                        <td class="ph-tag">&#123;&#123;vat_amount&#125;&#125;</td>
+                        <td>Calculated VAT value.</td>
+                    </tr>
+                    <tr>
+                        <td class="ph-tag">&#123;&#123;discount&#125;&#125;</td>
+                        <td>Discount amount (blank/empty when zero — pair with <code
+                                class="inline-code">&#123;&#123;#if discount&#125;&#125;</code>).</td>
+                    </tr>
+                    <tr>
+                        <td class="ph-tag">&#123;&#123;grand_total&#125;&#125;</td>
+                        <td>Subtotal + VAT − discount.</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3 style="font-size:13px; text-transform:uppercase; letter-spacing:.5px; color:var(--text-secondary); margin:20px 0 8px;">
+                Footer</h3>
+            <div class="table-scroll">
+                <table class="ph-table">
+                    <tr>
+                        <th>Tag</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td class="ph-tag">&#123;&#123;notes&#125;&#125;</td>
+                        <td>Terms, conditions or footnote text.</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <!-- CONDITIONALS -->
+        <section class="guide-section" id="conditionals">
+            <h2><span class="step-badge">3</span> Conditional blocks</h2>
+            <p>Wrap a section of HTML in <code class="inline-code">&#123;&#123;#if field&#125;&#125; ...
+                    &#123;&#123;/if&#125;&#125;</code> to only render it when that field has a value, or
+                <code class="inline-code">&#123;&#123;#unless field&#125;&#125; ... &#123;&#123;/unless&#125;&#125;</code>
+                to render it only when the field is empty. This is how the default template hides an entire "VAT/TRN"
+                line when no TRN was entered, instead of printing "VAT/TRN: " with nothing after it.</p>
+            <pre class="code-block"><span class="kw">&#123;&#123;#if company_trn&#125;&#125;</span>
+&lt;div class="trn-box"&gt;VAT/TRN: <span class="ph">&#123;&#123;company_trn&#125;&#125;</span>&lt;/div&gt;
+<span class="kw">&#123;&#123;/if&#125;&#125;</span></pre>
+            <div class="callout info">
+                <code class="inline-code">&#123;&#123;#if&#125;&#125;</code> and
+                <code class="inline-code">&#123;&#123;#unless&#125;&#125;</code> work with any top-level field name
+                from the reference table (not just company_trn) — e.g. <code
+                    class="inline-code">document_due_date</code>, <code class="inline-code">client_address</code>,
+                <code class="inline-code">discount</code>. Inside an <code class="inline-code">&#123;&#123;#items&#125;&#125;</code>
+                loop, only <code class="inline-code">&#123;&#123;#if item_sku&#125;&#125;</code> /
+                <code class="inline-code">&#123;&#123;#unless item_sku&#125;&#125;</code> are supported.
+            </div>
+        </section>
+
+        <!-- LOOPS -->
+        <section class="guide-section" id="loops">
+            <h2><span class="step-badge">4</span> Repeating line items</h2>
+            <p>Line items are a list, so they need a loop instead of a single placeholder. Wrap your row markup in
+                <code class="inline-code">&#123;&#123;#items&#125;&#125; ... &#123;&#123;/items&#125;&#125;</code>
+                — the engine repeats everything inside it once per line item you've added in the sidebar.</p>
+            <pre class="code-block">&lt;table&gt;
+  &lt;tbody&gt;
+    <span class="kw">&#123;&#123;#items&#125;&#125;</span>
+    &lt;tr&gt;
+      &lt;td&gt;<span class="ph">&#123;&#123;item_index&#125;&#125;</span>&lt;/td&gt;
+      &lt;td&gt;<span class="ph">&#123;&#123;item_description&#125;&#125;</span>&lt;/td&gt;
+      &lt;td&gt;<span class="ph">&#123;&#123;item_sku&#125;&#125;</span>&lt;/td&gt;
+      &lt;td&gt;<span class="ph">&#123;&#123;item_qty&#125;&#125;</span>&lt;/td&gt;
+      &lt;td&gt;<span class="ph">&#123;&#123;item_price&#125;&#125;</span>&lt;/td&gt;
+      &lt;td&gt;<span class="ph">&#123;&#123;item_total&#125;&#125;</span>&lt;/td&gt;
+    &lt;/tr&gt;
+    <span class="kw">&#123;&#123;/items&#125;&#125;</span>
+  &lt;/tbody&gt;
+&lt;/table&gt;</pre>
+            <div class="table-scroll">
+                <table class="ph-table">
+                    <tr>
+                        <th>Tag</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td class="ph-tag">&#123;&#123;item_index&#125;&#125;</td>
+                        <td>1-based row number.</td>
+                    </tr>
+                    <tr>
+                        <td class="ph-tag">&#123;&#123;item_description&#125;&#125;</td>
+                        <td>Product / service description.</td>
+                    </tr>
+                    <tr>
+                        <td class="ph-tag">&#123;&#123;item_sku&#125;&#125;</td>
+                        <td>SKU or item code.</td>
+                    </tr>
+                    <tr>
+                        <td class="ph-tag">&#123;&#123;item_qty&#125;&#125;</td>
+                        <td>Quantity.</td>
+                    </tr>
+                    <tr>
+                        <td class="ph-tag">&#123;&#123;item_price&#125;&#125;</td>
+                        <td>Unit price, fixed to 2 decimals.</td>
+                    </tr>
+                    <tr>
+                        <td class="ph-tag">&#123;&#123;item_total&#125;&#125;</td>
+                        <td>Qty × price, fixed to 2 decimals.</td>
+                    </tr>
+                </table>
+            </div>
+            <p style="margin-top:14px;">In a hurry? Skip building your own table and just drop in
+                <code class="inline-code">&#123;&#123;items_table&#125;&#125;</code> — it's replaced with a
+                complete, pre-styled items table (with a "no items added" empty state) so you don't need to write
+                the loop yourself.</p>
+        </section>
+
+        <!-- THEMING -->
+        <section class="guide-section" id="theming">
+            <h2><span class="step-badge">5</span> Theming</h2>
+            <p>GulfDocs's theme manager (the color palette in the sidebar) injects five CSS custom properties into
+                your template automatically, right before <code class="inline-code">&lt;/head&gt;</code>. Reference
+                them in your own <code class="inline-code">&lt;style&gt;</code> block and your template will
+                repaint live as the user changes colors — you don't need to hard-code hex values.</p>
+            <pre class="code-block">.doc-meta h1 { color: var(<span class="ph">--doc-primary</span>); }
+body { color: var(<span class="ph">--doc-text</span>); background: var(<span class="ph">--doc-surface</span>); }
+.company-info p { color: var(<span class="ph">--doc-text-secondary</span>); }
+table { border-color: var(<span class="ph">--doc-border</span>); }</pre>
+            <p>If a variable isn't set (template opened outside GulfDocs, or ThemeManager unavailable) it's safe to
+                give it a plain CSS fallback, e.g. <code class="inline-code">color: var(--doc-primary,
+                    #2563eb);</code></p>
+        </section>
+
+        <!-- PITFALLS -->
+        <section class="guide-section" id="pitfalls">
+            <h2><span class="step-badge">!</span> Common pitfalls</h2>
+            <div class="guide-card">
+                <h3>Unmatched placeholders disappear silently</h3>
+                <p>Any leftover <code class="inline-code">&#123;&#123;...&#125;&#125;</code> that isn't a recognized
+                    tag — a typo like <code class="inline-code">&#123;&#123;client_naem&#125;&#125;</code> — is
+                    stripped out of the final HTML rather than shown as an error. If a value seems to be missing,
+                    re-check the spelling against the reference table above first.</p>
+            </div>
+            <div class="guide-card">
+                <h3>Placeholders only substitute exact tag names</h3>
+                <p>There's no support for nested object paths (e.g. <code class="inline-code">&#123;&#123;client.name&#125;&#125;</code>)
+                    or custom/arbitrary field names — only the flat list in the reference table above and the item
+                    fields inside an <code class="inline-code">&#123;&#123;#items&#125;&#125;</code> block are
+                    understood.</p>
+            </div>
+            <div class="guide-card">
+                <h3>Always close what you open</h3>
+                <p>Every <code class="inline-code">&#123;&#123;#if&#125;&#125;</code>,
+                    <code class="inline-code">&#123;&#123;#unless&#125;&#125;</code> and
+                    <code class="inline-code">&#123;&#123;#items&#125;&#125;</code> block needs its matching
+                    <code class="inline-code">&#123;&#123;/if&#125;&#125;</code>,
+                    <code class="inline-code">&#123;&#123;/unless&#125;&#125;</code> or
+                    <code class="inline-code">&#123;&#123;/items&#125;&#125;</code> — an unclosed block will
+                    swallow the rest of your document.</p>
+            </div>
+            <div class="guide-card">
+                <h3>Your template never leaves the browser</h3>
+                <p>Substitution happens entirely on the client — nothing is uploaded. That also means the template
+                    only exists for your current session unless you save it: use <strong>Export JSON</strong> in
+                    the editor to keep a permanent copy alongside your business profile.</p>
+            </div>
+        </section>
+
+        <!-- STARTER TEMPLATE -->
+        <section class="guide-section" id="starter">
+            <h2><span class="step-badge">6</span> Minimal starter template</h2>
+            <p>Copy this into a <code class="inline-code">.html</code> file and upload it to try the full placeholder
+                system end to end.</p>
+            <pre class="code-block">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;<span class="ph">&#123;&#123;document_title&#125;&#125;</span>&lt;/title&gt;
+  &lt;style&gt;
+    body { font-family: sans-serif; padding: 32px; color: var(<span class="ph">--doc-text</span>); }
+    h1 { color: var(<span class="ph">--doc-primary</span>); }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    td, th { border-bottom: 1px solid var(<span class="ph">--doc-border</span>); padding: 8px; text-align: left; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;<span class="ph">&#123;&#123;company_name&#125;&#125;</span>&lt;/h1&gt;
+  <span class="kw">&#123;&#123;#if company_trn&#125;&#125;</span>
+  &lt;p&gt;VAT/TRN: <span class="ph">&#123;&#123;company_trn&#125;&#125;</span>&lt;/p&gt;
+  <span class="kw">&#123;&#123;/if&#125;&#125;</span>
+
+  &lt;h2&gt;<span class="ph">&#123;&#123;document_title&#125;&#125;</span> — <span class="ph">&#123;&#123;document_number&#125;&#125;</span>&lt;/h2&gt;
+  &lt;p&gt;Bill to: &lt;strong&gt;<span class="ph">&#123;&#123;client_name&#125;&#125;</span>&lt;/strong&gt;&lt;/p&gt;
+
+  &lt;table&gt;
+    &lt;thead&gt;&lt;tr&gt;&lt;th&gt;#&lt;/th&gt;&lt;th&gt;Description&lt;/th&gt;&lt;th&gt;Qty&lt;/th&gt;&lt;th&gt;Total&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+    &lt;tbody&gt;
+      <span class="kw">&#123;&#123;#items&#125;&#125;</span>
+      &lt;tr&gt;
+        &lt;td&gt;<span class="ph">&#123;&#123;item_index&#125;&#125;</span>&lt;/td&gt;
+        &lt;td&gt;<span class="ph">&#123;&#123;item_description&#125;&#125;</span>&lt;/td&gt;
+        &lt;td&gt;<span class="ph">&#123;&#123;item_qty&#125;&#125;</span>&lt;/td&gt;
+        &lt;td&gt;<span class="ph">&#123;&#123;item_total&#125;&#125;</span>&lt;/td&gt;
+      &lt;/tr&gt;
+      <span class="kw">&#123;&#123;/items&#125;&#125;</span>
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+
+  &lt;p&gt;&lt;strong&gt;Grand Total: <span class="ph">&#123;&#123;currency&#125;&#125;</span> <span class="ph">&#123;&#123;grand_total&#125;&#125;</span>&lt;/strong&gt;&lt;/p&gt;
+  &lt;p&gt;<span class="ph">&#123;&#123;notes&#125;&#125;</span>&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+            <a href="/custom-template.html" class="guide-cta">Try it in the Template Editor →</a>
+        </section>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-brand">GulfDocs.</div>
+        <p>Free GCC business document generator. No signup. No data stored. Forever free.</p>
+        <div class="footer-links">
+            <a href="/">Home</a>
+            <a href="/custom-template.html">Template Editor</a>
+            <a href="/privacy-policy.html">Privacy Policy</a>
+            <a href="/terms-of-use.html">Terms of Use</a>
+            <a href="mailto:abdullah123bin@gmail.com">Contact</a>
+        </div>
+        <div class="arabic">شكراً لاستخدامكم خدماتنا • Thank you for using GulfDocs</div>
+    </footer>
+
+</body>
+
+</html>
