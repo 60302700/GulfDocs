@@ -656,7 +656,7 @@ footer .arabic {
 /* Editable Inputs */
 .editable {
     padding: 4px 6px;
-    border: 1px dashed transparent;
+    border: 1px dashed var(--border); background-color: rgba(255, 255, 255, 0.4);
     border-radius: 4px;
     transition: all 0.2s;
     outline: none;
@@ -687,7 +687,7 @@ footer .arabic {
     font-weight: inherit;
     color: inherit;
     background: transparent;
-    border: 1px dashed transparent;
+    border: 1px dashed var(--border); background-color: rgba(255, 255, 255, 0.4);
     padding: 4px 6px;
     border-radius: 4px;
     outline: none;
@@ -1144,4 +1144,23 @@ footer .arabic {
     .cookie-consent-actions {
         justify-content: flex-end;
     }
+}
+/* explicitly highlight empty inputs so users don't forget to fill them out */
+.editable:empty,
+.editable-input:placeholder-shown {
+    background-color: rgba(251, 191, 36, 0.15);
+    border-color: rgba(251, 191, 36, 0.4);
+}
+.editable:empty:hover,
+.editable-input:placeholder-shown:hover,
+.editable:empty:focus,
+.editable-input:placeholder-shown:focus {
+    background-color: #f8fafc;
+    border-color: var(--doc-primary);
+}
+
+/* ensure empty editable divs don't collapse */
+.editable:empty {
+    min-height: 24px;
+    vertical-align: middle;
 }
