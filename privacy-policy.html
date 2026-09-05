@@ -7,7 +7,7 @@
     <title>Privacy Policy | GulfDocs</title>
     <!-- Fallback CSP for static hosting; keep in sync with the helmet config in server.js -->
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self';">
+        content="default-src 'self'; script-src 'self' 'unsafe-inline' https://pagead2.googlesyndication.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://pagead2.googlesyndication.com; connect-src 'self'; frame-src 'self' https://googleads.g.doubleclick.net; object-src 'none'; base-uri 'self'; form-action 'self';">
     <meta name="description"
         content="GulfDocs privacy policy: what data we collect (none, by default), how local storage and cookies are used, and how advertising works on this site." />
     <link
@@ -33,70 +33,60 @@
             font-weight: 800;
             letter-spacing: -0.5px;
             margin: 12px 0 8px;
+            color: var(--text-primary);
         }
 
-        .legal-hero p.updated {
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-
-        .legal-section {
-            margin-bottom: 34px;
-        }
-
-        .legal-section h2 {
-            font-family: 'Sora', sans-serif;
-            font-size: 19px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .legal-section p,
-        .legal-section li {
+        .legal-hero p {
             color: var(--text-secondary);
-            font-size: 14.5px;
+            font-size: 15px;
+        }
+
+        .legal-content {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 40px;
+            color: var(--text-primary);
             line-height: 1.7;
         }
 
-        .legal-section ul {
-            padding-left: 20px;
-            margin: 8px 0;
+        .legal-content h2 {
+            font-family: 'Sora', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            margin-top: 32px;
+            margin-bottom: 12px;
+            color: var(--doc-primary, var(--accent-blue));
+            letter-spacing: -0.2px;
         }
 
-        .legal-section li {
-            margin-bottom: 6px;
+        .legal-content h2:first-child {
+            margin-top: 0;
         }
 
-        .legal-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 18px 20px;
-            margin: 14px 0;
+        .legal-content p, .legal-content li {
+            margin-bottom: 16px;
+            font-size: 15px;
+            color: var(--text-secondary);
         }
 
-        .callout {
-            border-radius: 8px;
-            padding: 14px 16px;
-            font-size: 13.5px;
-            line-height: 1.6;
-            margin: 10px 0;
+        .legal-content .highlight {
+            background-color: #eff6ff;
+            border-left: 4px solid var(--accent-blue);
+            padding: 16px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 24px;
         }
 
-        .callout.info {
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
-            color: #1e3a8a;
+        .legal-content .highlight h3 {
+            font-family: 'Sora', sans-serif;
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: var(--text-primary);
         }
 
-        code.inline-code {
-            background: #f1f5f9;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            padding: 2px 6px;
-            font-family: monospace;
-            font-size: 12.5px;
-            color: var(--accent-purple);
+        .legal-content .highlight p {
+            margin-bottom: 0;
         }
     </style>
 </head>
@@ -112,109 +102,52 @@
         </div>
     </nav>
 
-    <div class="legal-wrap">
-
+    <!-- MAIN -->
+    <main class="legal-wrap">
         <div class="legal-hero">
-            <span class="nav-badge blue">Legal</span>
             <h1>Privacy Policy</h1>
-            <p class="updated">Last updated: July 14, 2026</p>
+            <p>Last Updated: October 2026</p>
         </div>
 
-        <div class="legal-section">
-            <h2>Overview</h2>
-            <p>GulfDocs is a free, no-signup document generator. This policy explains what happens to your
-                information when you use it. The short version: your document data (company details, client
-                details, line items, custom templates) is processed entirely in your browser and is never sent to
-                or stored on our servers.</p>
-        </div>
-
-        <div class="legal-section">
-            <h2>Information we do not collect</h2>
-            <p>There is no account creation, login, or payment on GulfDocs, so we never collect:</p>
-            <ul>
-                <li>Your name, email, or any registration details</li>
-                <li>Payment or billing information</li>
-                <li>The content of the invoices, payslips, quotations, purchase orders, billing details or custom
-                    templates you create</li>
-            </ul>
-            <p>The web server that serves this site only sends you the static page files (HTML, CSS, JavaScript) and
-                the demo document routes used for preview purposes. It does not receive or store the data you type
-                into any form.</p>
-        </div>
-
-        <div class="legal-section">
-            <h2>Local storage on your device</h2>
-            <p>To make it convenient to come back to an in-progress document, GulfDocs saves your form entries and
-                any custom template you upload to your browser's <strong>local storage</strong> — a storage area
-                built into your browser that lives only on your device. This data:</p>
-            <ul>
-                <li>Is never transmitted to us or any third party</li>
-                <li>Stays on your device until you clear it (via your browser settings, or by clearing the
-                    corresponding fields in the app)</li>
-                <li>Is not covered by a "right to deletion" request to us, because we never had a copy of it —
-                    clearing your own browser storage is the way to remove it</li>
-            </ul>
-        </div>
-
-        <div class="legal-section">
-            <h2>Cookies &amp; advertising</h2>
-            <p>GulfDocs is, or will be, funded by advertising rather than charging users. At the time of writing,
-                no advertising scripts are active on the site. When we do enable an ad network (such as Google
-                AdSense), that network may set cookies or use similar technology in your browser to:</p>
-            <ul>
-                <li>Show ads relevant to you</li>
-                <li>Measure how ads perform</li>
-                <li>Limit how many times you see the same ad</li>
-            </ul>
-            <div class="callout info">
-                The cookie banner shown on this site lets you choose "Necessary only" or "Accept all" before any
-                advertising cookies are set. Once ads are live, this policy will be updated with the specific ad
-                network(s) in use and links to their own privacy policies and opt-out tools (for example, Google's
-                Ads Settings and the <a href="https://policies.google.com/technologies/partner-sites"
-                    target="_blank" rel="noopener">Google Partner Sites</a> policy).
+        <div class="legal-content">
+            <div class="highlight">
+                <h3>Our Core Privacy Promise</h3>
+                <p>GulfDocs does not require you to sign up, log in, or provide payment information. <strong>All document data your business enters into our forms (such as invoice details, client information, and financial data) is stored completely locally in your own browser</strong> and is never sent to, collected by, or stored on our servers.</p>
             </div>
-        </div>
 
-        <div class="legal-section">
-            <h2>Third-party fonts</h2>
-            <p>This site loads fonts from Google Fonts' CDN. Loading a font from Google's servers means your
-                browser makes a direct request to Google, which can see your IP address and browser details as part
-                of that request, independent of anything GulfDocs does. See <a
-                    href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's Privacy
-                    Policy</a> for details.</p>
-        </div>
-
-        <div class="legal-section">
-            <h2>Children's privacy</h2>
-            <p>GulfDocs is a business-document tool intended for general business/professional use and is not
-                directed at children. We do not knowingly collect personal information from children.</p>
-        </div>
-
-        <div class="legal-section">
-            <h2>Your choices</h2>
+            <h2>1. Information We Do NOT Collect</h2>
+            <p>We believe in absolute data minimization for your business tools. Therefore, we do <strong>not</strong> collect:</p>
             <ul>
-                <li>Clear your browser's local storage / site data at any time to remove anything GulfDocs has
-                    saved on your device.</li>
-                <li>Use the cookie banner (or your browser's cookie settings) to control advertising cookies once
-                    ads are enabled.</li>
-                <li>Use your browser's "Do Not Track" or ad-blocking settings — GulfDocs's core document-generation
-                    features work the same either way.</li>
+                <li>Your name, email address, or any account credentials (no registration required).</li>
+                <li>Credit card numbers or payment details (our platform is 100% free to use).</li>
+                <li>The contents of the PDFs or HTML documents you generate (e.g., invoice line items, TRN numbers, client addresses). This data is kept solely on your device.</li>
             </ul>
-        </div>
 
-        <div class="legal-section">
-            <h2>Changes to this policy</h2>
-            <p>If how GulfDocs handles data changes — most likely when advertising is switched on — this page will
-                be updated and the "Last updated" date above will change accordingly.</p>
-        </div>
+            <h2>2. Advertising & Third-Party Services (How We Keep This Free)</h2>
+            <p>To keep GulfDocs servers running and free for all GCC users, we rely on third-party advertisement networks (such as Google AdSense) to monetize the site.</p>
+            <ul>
+                <li><strong>Google AdSense:</strong> Google uses cookies to serve ads based on your prior visits to GulfDocs or other websites.</li>
+                <li>Google's use of advertising cookies enables it and its partners to serve ads to you based on your browsing history.</li>
+                <li>You may opt out of personalized advertising by visiting the <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener">Google Ads Settings</a>.</li>
+            </ul>
 
-        <div class="legal-section">
-            <h2>Contact</h2>
-            <p>Questions about this policy? Email <a
-                    href="mailto:abdullah123bin@gmail.com">abdullah123bin@gmail.com</a>.</p>
-        </div>
+            <h2>3. How We Use Cookies & Local Storage</h2>
+            <p>As a dynamic web application, we make heavy use of local browser technologies to function properly without accounts:</p>
+            <ul>
+                <li><strong>Local Storage:</strong> We use your browser's <code>localStorage</code> to save your document drafts (so you don't lose your work if you accidentally refresh the page) and your "Business Profiles" (so you don't have to re-type your company TRN and address every time). Again, this remains strictly on your machine.</li>
+                <li><strong>Consent Cookies:</strong> If you accept or reject our cookie policy banner, we save a small cookie simply to remember your preference for your next visit.</li>
+            </ul>
 
-    </div>
+            <h2>4. Analytics</h2>
+            <p>We may use basic, anonymized web analytics (such as counting how many visits the site gets per day) to ensure our servers are handling the load properly in the GCC region. This traffic data is heavily anonymized and cannot be used to personally identify your business.</p>
+
+            <h2>5. Changes to This Policy</h2>
+            <p>We may update this Privacy Policy from time to time as we add new tools (like new generator templates). We encourage you to review this page periodically.</p>
+
+            <h2>Contact Us</h2>
+            <p>If you have any questions or concerns about this Privacy Policy, please contact us at: <strong>contact@gulfdocs.com</strong>.</p>
+        </div>
+    </main>
 
     <!-- FOOTER -->
     <footer>
@@ -223,9 +156,10 @@
         <div class="footer-links">
             <a href="/privacy-policy.html">Privacy Policy</a>
             <a href="/terms-of-use.html">Terms of Use</a>
-            <a href="mailto:abdullah123bin@gmail.com">Contact</a>
+            <a href="/about-us.html">About Us</a>
+            <a href="/template-guide.html">Custom Templates</a>
         </div>
-        <div class="arabic">شكراً لاستخدامكم خدماتنا • Thank you for using GulfDocs</div>
+        <div class="arabic">صُنع لدعم الأعمال في الخليج</div>
     </footer>
 
 </body>

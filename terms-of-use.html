@@ -5,11 +5,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Terms of Use | GulfDocs</title>
-    <!-- Fallback CSP for static hosting; keep in sync with the helmet config in server.js -->
+    <!-- Fallback CSP for static hosting -->
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <meta name="description"
-        content="GulfDocs terms of use: this is a free document-formatting tool, not legal, tax or accounting advice. Read before generating GCC business documents." />
+        content="default-src 'self'; script-src 'self' 'unsafe-inline' https://pagead2.googlesyndication.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://pagead2.googlesyndication.com; connect-src 'self'; frame-src 'self' https://googleads.g.doubleclick.net; object-src 'none'; base-uri 'self'; form-action 'self';">
+    <meta name="description" content="Terms of Use for GulfDocs - Free business document generators for the GCC." />
     <link
         href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap"
         rel="stylesheet" />
@@ -33,58 +32,61 @@
             font-weight: 800;
             letter-spacing: -0.5px;
             margin: 12px 0 8px;
+            color: var(--text-primary);
         }
 
-        .legal-hero p.updated {
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-
-        .legal-section {
-            margin-bottom: 34px;
-        }
-
-        .legal-section h2 {
-            font-family: 'Sora', sans-serif;
-            font-size: 19px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .legal-section p,
-        .legal-section li {
+        .legal-hero p {
             color: var(--text-secondary);
-            font-size: 14.5px;
+            font-size: 15px;
+        }
+
+        .legal-content {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 40px;
+            color: var(--text-primary);
             line-height: 1.7;
         }
 
-        .legal-section ul {
-            padding-left: 20px;
-            margin: 8px 0;
+        .legal-content h2 {
+            font-family: 'Sora', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            margin-top: 32px;
+            margin-bottom: 12px;
+            color: var(--doc-primary, var(--accent-blue));
+            letter-spacing: -0.2px;
         }
 
-        .legal-section li {
-            margin-bottom: 6px;
+        .legal-content h2:first-child {
+            margin-top: 0;
         }
 
-        .callout {
-            border-radius: 8px;
-            padding: 16px 18px;
-            font-size: 13.5px;
-            line-height: 1.6;
-            margin: 10px 0;
+        .legal-content p, .legal-content li {
+            margin-bottom: 16px;
+            font-size: 15px;
+            color: var(--text-secondary);
         }
 
-        .callout.warn {
-            background: #fffbeb;
-            border: 1px solid #fde68a;
-            color: #92400e;
+        .legal-content .highlight {
+            background-color: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 16px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 24px;
         }
 
-        .callout.info {
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
-            color: #1e3a8a;
+        .legal-content .highlight h3 {
+            font-family: 'Sora', sans-serif;
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #b91c1c;
+        }
+
+        .legal-content .highlight p {
+            margin-bottom: 0;
+            color: #7f1d1d;
         }
     </style>
 </head>
@@ -100,104 +102,43 @@
         </div>
     </nav>
 
-    <div class="legal-wrap">
-
+    <!-- MAIN -->
+    <main class="legal-wrap">
         <div class="legal-hero">
-            <span class="nav-badge blue">Legal</span>
             <h1>Terms of Use</h1>
-            <p class="updated">Last updated: July 14, 2026</p>
+            <p>Last Updated: October 2026</p>
         </div>
 
-        <div class="legal-section">
-            <h2>1. What GulfDocs is</h2>
-            <p>GulfDocs ("the Service", "we", "us") is a free, no-signup, browser-based tool that helps you format
-                business documents — invoices, payslips, quotations, purchase orders, billing details, and custom
-                HTML templates — commonly used by businesses in Qatar, the UAE, Saudi Arabia and the wider GCC
-                region. By using the Service, you agree to these Terms.</p>
-            <p>GulfDocs is currently run as an independent, non-incorporated project. It is not currently operated
-                by a registered company, and these Terms do not designate a specific governing jurisdiction. If that
-                changes, this page will be updated to reflect the operating entity and applicable law.</p>
-        </div>
+        <div class="legal-content">
+            <h2>1. Introduction</h2>
+            <p>Welcome to GulfDocs. By accessing or using our website and completely free document generation tools, you agree to comply with and be bound by the following Terms of Use. If you do not agree to these terms, please do not use our service.</p>
 
-        <div class="legal-section">
-            <h2>2. Not legal, tax or accounting advice</h2>
-            <div class="callout warn">
-                <strong>This is the most important section.</strong> GulfDocs only formats the information you
-                type into a document layout. It does not verify, and cannot guarantee, that the resulting document
-                meets the legal, tax, or regulatory requirements of Qatar, the UAE, Saudi Arabia, or any other GCC
-                or non-GCC jurisdiction — including but not limited to VAT/TRN invoicing rules, Saudi ZATCA
-                e-invoicing requirements, UAE Federal Tax Authority rules, or WPS payslip requirements.
+            <h2>2. Free Usage & Monetization</h2>
+            <p>GulfDocs operates as a completely free software-as-a-service (SaaS) platform targeting businesses primarily in the GCC region. We do not charge subscription fees, nor do we require you to register an account.</p>
+            <p>In exchange for providing these tools free of charge, the Service is monetized via third-party advertising (e.g., Google AdSense). You agree that we may display such advertisements on the Site.</p>
+
+            <h2>3. Informational Purposes Only</h2>
+            <p>The templates provided (Tax Invoices, Payslips, Quotations, Purchase Orders, etc.) are structured to loosely adhere to standard GCC formats (such as general FTA VAT formats in the UAE and ZATCA guidelines in Saudi Arabia). <strong>However, they are provided for informational and convenience purposes only.</strong></p>
+
+            <div class="highlight">
+                <h3>Disclaimer of Liability</h3>
+                <p>GulfDocs is NOT an accounting firm, a tax consultancy, or a legal entity. We make no representations or warranties regarding the legal or tax compliance of the generated documents. It is your sole responsibility to ensure that the documents you generate meet the local tax and legal requirements of your respective jurisdiction. We shall not be held liable for any financial losses, tax penalties, or legal disputes arising from the use of our templates.</p>
             </div>
-            <p>Before relying on a document generated here for official, tax, payroll, customs, banking or legal
-                purposes, you are responsible for independently verifying it against the current regulations that
-                apply to you, or consulting a qualified accountant, tax advisor, or lawyer in the relevant
-                jurisdiction. GulfDocs is a formatting convenience, not a compliance guarantee.</p>
-        </div>
 
-        <div class="legal-section">
-            <h2>3. Your responsibilities</h2>
-            <ul>
-                <li>You are solely responsible for the accuracy of the information you enter (company details,
-                    client details, amounts, tax rates, etc.).</li>
-                <li>You will not use the Service to create fraudulent, deceptive, or impersonating documents, or to
-                    misrepresent a transaction.</li>
-                <li>You will not upload custom HTML templates containing malicious code intended to harm other
-                    users or systems.</li>
-                <li>You are responsible for complying with the laws applicable to your business and location.</li>
-            </ul>
-        </div>
+            <h2>4. User Data & Storage</h2>
+            <p>Because there are no user accounts, all data you enter (such as company details, logos, and financial figures) is processed locally on your device via HTML local storage functionality. We do not guarantee the permanent storage or backup of your data. We strongly advise that you download your "Profile JSON" files and PDF exports to your local machine to prevent data loss. GulfDocs takes no responsibility for any lost data, invoices, or business profiles.</p>
 
-        <div class="legal-section">
-            <h2>4. Your content</h2>
-            <p>Anything you type into the forms, or any custom HTML template you upload, belongs to you. Since this
-                data is processed in your browser and is not transmitted to our servers (see our <a
-                    href="/privacy-policy.html">Privacy Policy</a>), we make no claim of ownership over it and have
-                no copy of it on our end.</p>
-        </div>
+            <h2>5. Acceptable Use</h2>
+            <p>You agree not to use the Service to generate falsified, fraudulent, or illegal documents. Providing a free tool does not mean we endorse illegal activities. You are solely responsible for the content you generate.</p>
 
-        <div class="legal-section">
-            <h2>5. Advertising</h2>
-            <p>GulfDocs is, or will be, funded by third-party advertising (such as Google AdSense) so that the core
-                tool can remain free with no signup. Ads are provided by independent ad networks; their appearance
-                on GulfDocs does not imply our endorsement of the advertised products or services, and we are not
-                responsible for the content of third-party ads.</p>
-        </div>
+            <h2>6. Intellectual Property</h2>
+            <p>The Site's specific layout, code, custom template parser, and branding are the intellectual property of GulfDocs. You may freely generate, distribute, and sell the PDFs of the documents you create, but you may not scrape, clone, or resell the underlying source code of our generators without permission.</p>
+            
+            <h2>7. modifications to Terms</h2>
+            <p>We reserve the right to modify these Terms of Use at any time. Your continued use of the Site following any changes constitutes your acceptance of the new terms.</p>
 
-        <div class="legal-section">
-            <h2>6. "As is", no warranty</h2>
-            <p>The Service is provided "as is" and "as available," without warranties of any kind, whether express
-                or implied, including but not limited to accuracy, fitness for a particular purpose, or
-                uninterrupted availability. We do not guarantee the Service will be error-free or always
-                accessible.</p>
         </div>
-
-        <div class="legal-section">
-            <h2>7. Limitation of liability</h2>
-            <p>To the fullest extent permitted by applicable law, GulfDocs and its operator will not be liable for
-                any indirect, incidental, or consequential damages — including financial loss, regulatory penalties,
-                rejected filings, or business disputes — arising from your use of documents generated by the
-                Service. Use of any generated document for an official, financial, or legal purpose is at your own
-                risk.</p>
-        </div>
-
-        <div class="legal-section">
-            <h2>8. Changes</h2>
-            <p>We may update these Terms, the Service, or its features (including introducing paid features or ads)
-                over time. Continued use of GulfDocs after a change means you accept the updated Terms. Material
-                changes will be reflected by updating the date at the top of this page.</p>
-        </div>
-
-        <div class="legal-section">
-            <h2>9. Contact</h2>
-            <p>Questions about these Terms? Email <a
-                    href="mailto:abdullah123bin@gmail.com">abdullah123bin@gmail.com</a>.</p>
-        </div>
-
-        <div class="callout info">
-            Also see our <a href="/privacy-policy.html">Privacy Policy</a> for how data and cookies are handled.
-        </div>
-
-    </div>
+    </main>
 
     <!-- FOOTER -->
     <footer>
@@ -206,9 +147,10 @@
         <div class="footer-links">
             <a href="/privacy-policy.html">Privacy Policy</a>
             <a href="/terms-of-use.html">Terms of Use</a>
-            <a href="mailto:abdullah123bin@gmail.com">Contact</a>
+            <a href="/about-us.html">About Us</a>
+            <a href="/template-guide.html">Custom Templates</a>
         </div>
-        <div class="arabic">شكراً لاستخدامكم خدماتنا • Thank you for using GulfDocs</div>
+        <div class="arabic">صُنع لدعم الأعمال في الخليج</div>
     </footer>
 
 </body>
