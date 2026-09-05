@@ -241,11 +241,29 @@ function importBusinessProfile(event) {
     reader.onload = function (e) {
         try {
             const profile = JSON.parse(e.target.result);
+            if (profile.customTemplate) {
+                const container = document.querySelector('.invoice-container');
+                if (container) {
+                    container.outerHTML = profile.customTemplate;
+                }
+            } else {
+                // If the JSON contains a custom template, replace the document area
+            if (profile.customTemplate) {
+                const container = document.querySelector('.invoice-container');
+                if (container) {
+                    container.innerHTML = profile.customTemplate;
+                }
+            }
+
+            // Always apply the standard profile fields on top
             _applyProfile(profile);
+
             // Also persist the imported profile
             localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
             _showSaveToast();
+            }
         } catch (err) {
+            console.error(err);
             alert("Oops! This doesn't look like a valid GulfDocs profile file.");
         }
     };

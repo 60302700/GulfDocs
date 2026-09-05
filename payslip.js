@@ -111,6 +111,21 @@ function importBusinessProfile(event) {
     reader.onload = function (e) {
         try {
             const p = JSON.parse(e.target.result);
+            if (p.customTemplate) {
+                const container = document.querySelector('.invoice-container');
+                if (container) {
+                    container.outerHTML = p.customTemplate;
+                }
+            } else {
+                // If the JSON contains a custom template, replace the document area
+            if (p.customTemplate) {
+                const container = document.querySelector('.invoice-container');
+                if (container) {
+                    container.innerHTML = p.customTemplate;
+                }
+            }
+
+            // Apply standard profile fields
             if (p.name) document.getElementById('profile-name').innerText = p.name;
             if (p.trn) document.getElementById('profile-trn').innerText = p.trn;
             if (p.footer) document.getElementById('profile-footer').innerText = p.footer;
@@ -121,7 +136,7 @@ function importBusinessProfile(event) {
                 document.getElementById('logo-placeholder').style.display = 'none';
             }
             if (p.theme && typeof ThemeManager !== 'undefined') ThemeManager.applyThemeObject(p.theme);
-
+            }
         } catch (err) { alert("Invalid profile file."); }
     };
     reader.readAsText(file);
