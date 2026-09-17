@@ -22,14 +22,14 @@ GulfDocs lets small businesses, freelancers and HR teams generate professional b
 
 ## 🗂 Document Types
 
-| Page | File | Description |
-|---|---|---|
-| Invoice Generator | `invoice.html` | VAT-compliant tax invoices with TRN, QAR, IBAN fields |
-| Payslip Generator | `payslip.html` | WPS-compliant employee payslips with earnings & deductions |
-| Quotation Generator | `quotation.html` | Professional price quotes with VAT and approval signature |
-| Purchase Order | `purchase-order.html` | Supplier POs with vendor details and VAT breakdown |
-| Billing Details | `billing-details.html` | Bank settlement instructions with IBAN & SWIFT |
-| Custom Template | `custom-template.html` | Upload any HTML template, fill placeholders, print PDF |
+| Page                | File                   | Description                                                |
+| ------------------- | ---------------------- | ---------------------------------------------------------- |
+| Invoice Generator   | `invoice.html`         | VAT-compliant tax invoices with TRN, QAR, IBAN fields      |
+| Payslip Generator   | `payslip.html`         | WPS-compliant employee payslips with earnings & deductions |
+| Quotation Generator | `quotation.html`       | Professional price quotes with VAT and approval signature  |
+| Purchase Order      | `purchase-order.html`  | Supplier POs with vendor details and VAT breakdown         |
+| Billing Details     | `billing-details.html` | Bank settlement instructions with IBAN & SWIFT             |
+| Custom Template     | `custom-template.html` | Upload any HTML template, fill placeholders, print PDF     |
 
 ---
 
@@ -55,7 +55,7 @@ site-1/
 ├── purchase-order.html         # Purchase order generator
 ├── billing-details.html        # Billing details generator
 ├── custom-template.html        # Custom HTML template tool
-├── template-guide.html         # Guide: how to build custom templates
+<!-- template-guide removed -->
 ├── style.css                   # Shared styles & CSS custom properties
 ├── scripts.js                  # Invoice generator logic
 ├── payslip.js                  # Payslip generator logic
@@ -118,6 +118,7 @@ Security headers (CSP, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Po
 ### Enabling Google AdSense
 
 When AdSense is approved:
+
 1. Paste the AdSense verification `<meta>` tag and the `<script async>` tag in each HTML `<head>` (see the comment blocks already in the files).
 2. Extend `script-src`, `frame-src`, `connect-src` and `img-src` in `netlify.toml` with the required AdSense origins.
 3. Update the matching `<meta http-equiv="Content-Security-Policy">` tags in every HTML page.
@@ -142,7 +143,7 @@ Users can upload their own HTML document templates. Placeholders use double-curl
 <span>{{total_amount}}</span>
 ```
 
-GulfDocs auto-detects all placeholders, generates a form for them, and merges the values into the template for printing. See `template-guide.html` for the full placeholder reference.
+GulfDocs auto-detects all placeholders, generates a form for them, and merges the values into the template for printing. See the Template Editor for the placeholder reference.
 
 ---
 

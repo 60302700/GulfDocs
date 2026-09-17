@@ -1,0 +1,14 @@
+{
+  "business": {
+    "company_logo": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='64'%3E%3Crect width='100%25' height='100%25' fill='%23eef2ff'/%3E%3Ctext x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' font-family='Inter, Arial' font-size='18' fill='%230b4a7a'%3EAl Noor Trading%3C/text%3E%3C/svg%3E",
+    "company_name": "Al Noor Trading LLC",
+    "company_address": "P.O. Box 12345, Doha, Qatar",
+    "company_phone": "+974 5512 3344",
+    "company_email": "sales@alnoortrading.qa"
+  },
+  "defaults": {
+    "currency": "QAR",
+    "vat_rate": 5
+  },
+  "template": "demo-invoice-template.html"
+}
