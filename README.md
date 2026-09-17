@@ -8,12 +8,11 @@ GulfDocs lets small businesses, freelancers and HR teams generate professional b
 
 ## ✨ Features
 
-- **6 document types** — Invoice, Payslip, Purchase Order, Quotation, Billing Details, and Custom HTML Templates
+- **5 document types** — Invoice, Payslip, Purchase Order, Quotation, and Billing Details
 - **Live WYSIWYG preview** — an in-page iframe updates in real time as you type
 - **GCC-ready defaults** — QAR currency, 5 % VAT, IBAN / SWIFT fields, WPS-compliant payslip layout
 - **Client-side only** — all data stays in your browser; nothing is sent to any server
 - **Theme customization** — pick accent colors, text colors and border styles via the built-in theme sidebar
-- **Custom templates** — upload your own HTML template with `{{placeholder}}` syntax, fill in the form, and print to PDF
 - **PDF export** — one-click browser print-to-PDF, no server rendering required
 - **Profile persistence** — company details saved to `localStorage` so you never re-enter them
 - **Privacy-first** — no tracking cookies; optional cookie-consent banner for when AdSense is enabled
@@ -29,7 +28,6 @@ GulfDocs lets small businesses, freelancers and HR teams generate professional b
 | Quotation Generator | `quotation.html`       | Professional price quotes with VAT and approval signature  |
 | Purchase Order      | `purchase-order.html`  | Supplier POs with vendor details and VAT breakdown         |
 | Billing Details     | `billing-details.html` | Bank settlement instructions with IBAN & SWIFT             |
-| Custom Template     | `custom-template.html` | Upload any HTML template, fill placeholders, print PDF     |
 
 ---
 
@@ -54,15 +52,12 @@ site-1/
 ├── quotation.html              # Quotation generator
 ├── purchase-order.html         # Purchase order generator
 ├── billing-details.html        # Billing details generator
-├── custom-template.html        # Custom HTML template tool
-<!-- template-guide removed -->
 ├── style.css                   # Shared styles & CSS custom properties
 ├── scripts.js                  # Invoice generator logic
 ├── payslip.js                  # Payslip generator logic
 ├── quotation.js                # Quotation generator logic
 ├── purchase-order.js           # Purchase order logic
 ├── billing-details.js          # Billing details logic
-├── custom-template.js          # Custom template logic
 ├── theme-manager.js            # Real-time CSS variable theming
 ├── cookie-consent.js           # GDPR-style cookie consent banner
 ├── 404.html                    # Custom 404 page
@@ -132,18 +127,6 @@ GulfDocs uses CSS custom properties (`--doc-*`) for all document colors. The `Th
 To reset to defaults, clear the site's `localStorage`.
 
 ---
-
-## 📄 Custom Templates
-
-Users can upload their own HTML document templates. Placeholders use double-curly-brace syntax:
-
-```html
-<span>{{company_name}}</span>
-<span>{{invoice_date}}</span>
-<span>{{total_amount}}</span>
-```
-
-GulfDocs auto-detects all placeholders, generates a form for them, and merges the values into the template for printing. See the Template Editor for the placeholder reference.
 
 ---
 
