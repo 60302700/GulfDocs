@@ -1,0 +1,20 @@
+{
+  "country": "saudi_arabia",
+  "version": "2026-01",
+  "effective_from": "2026-01-01",
+  "required_fields": [
+    "seller.taxIdentity.taxId",
+    "seller.name",
+    "id",
+    "issueDate",
+    "items",
+    "total.grandTotal"
+  ],
+  "tax_rules": [
+    {
+      "category": "standard",
+      "rate": 0.05
+    }
+  ],
+  "notes": "Skeleton JSON rules for front-end validation; not a substitute for official ZATCA schema."
+}

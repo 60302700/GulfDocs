@@ -106,9 +106,9 @@ function loadLogo(event) {
 
 function exportBusinessProfile() {
   const profile = {
-    name: document.getElementById("profile-name")?.innerText || "",
-    trn: document.getElementById("profile-trn")?.innerText || "",
-    footer: document.getElementById("profile-footer")?.innerText || "",
+    name: document.getElementById("profile-name")?.textContent || "",
+    trn: document.getElementById("profile-trn")?.textContent || "",
+    footer: document.getElementById("profile-footer")?.textContent || "",
     logo: document.getElementById("brand-logo")?.src || "",
     currency: document.getElementById("currency-select")?.value || "QAR",
     theme:
@@ -133,10 +133,10 @@ function importBusinessProfile(event) {
       const p = JSON.parse(e.target.result);
 
       // Apply standard profile fields
-      if (p.name) document.getElementById("profile-name").innerText = p.name;
-      if (p.trn) document.getElementById("profile-trn").innerText = p.trn;
+      if (p.name) document.getElementById("profile-name").textContent = p.name;
+      if (p.trn) document.getElementById("profile-trn").textContent = p.trn;
       if (p.footer)
-        document.getElementById("profile-footer").innerText = p.footer;
+        document.getElementById("profile-footer").textContent = p.footer;
       if (p.currency) {
         document.getElementById("currency-select").value = p.currency;
         updateCurrency();
@@ -153,4 +153,99 @@ function importBusinessProfile(event) {
     }
   };
   reader.readAsText(file);
+}
+
+
+function buildCanonicalPurchaseOrder() {
+  const buyer = {
+    name: document.getElementById("profile-name")?.textContent?.trim() || "",
+    registrationNumber: "",
+    taxIdentity: { taxId: document.getElementById("profile-trn")?.textContent?.trim() || "", taxIdType: "VAT" },
+    address: { raw: document.getElementById("profile-address")?.textContent?.trim() || "" },
+    contact: { 
+      phone: document.getElementById("profile-phone")?.textContent?.trim() || "",
+      email: document.getElementById("profile-email")?.textContent?.trim() || ""
+    }
+  };
+
+  const supplierEl = document.querySelector(".bento-card .editable");
+  const supplierPhoneEl = document.querySelector(".bento-card .info-row:nth-child(2) .editable");
+  const supplierEmailEl = document.querySelector(".bento-card .info-row:nth-child(3) .editable");
+  
+  const supplier = {
+    name: supplierEl ? supplierEl.textContent.trim() : "",
+    taxIdentity: { taxId: "", taxIdType: "VAT" },
+    address: { raw: "" },
+    contact: {
+      phone: supplierPhoneEl ? supplierPhoneEl.textContent.trim() : "",
+      email: supplierEmailEl ? supplierEmailEl.textContent.trim() : ""
+    }
+  };
+
+  const items = [];
+  document.querySelectorAll("#items-tbody tr").forEach((row, idx) => {
+    const desc = row.querySelector("td div.editable")?.textContent?.trim() || "";
+    // item code in PO? checking generic
+    const codeEl = row.querySelector("td:nth-child(2) div.editable");
+    const code = codeEl ? codeEl.textContent.trim() : "";
+    const qtyEl = row.querySelector(".qty-input");
+    const qty = qtyEl ? parseFloat(qtyEl.value) || 0 : 0;
+    const priceEl = row.querySelector(".price-input");
+    const price = priceEl ? parseFloat(priceEl.value) || 0 : 0;
+    const itemTotal = qty * price;
+    
+    items.push({
+      id: String(idx + 1),
+      description: desc,
+      code: code,
+      quantity: qty,
+      unit: "EA",
+      unitPrice: price,
+      discount: { amount: 0 },
+      tax: { category: "S", rate: 0, amount: 0, taxableAmount: itemTotal },
+      netAmount: itemTotal,
+      totalAmount: itemTotal
+    });
+  });
+
+  const currencyCode = document.getElementById("currency-select")?.value || "QAR";
+  const subtotal = parseFloat(document.getElementById("sum-subtotal")?.textContent) || 0;
+  const vatAmount = parseFloat(document.getElementById("sum-vat")?.textContent) || 0;
+  const discountInput = document.getElementById("in-discount");
+  const discountAmt = discountInput ? (parseFloat(discountInput.value) || 0) : 0;
+  const grandTotal = parseFloat(document.getElementById("sum-total")?.textContent) || 0;
+
+  return {
+    id: document.querySelector(".inv-meta .meta-grid .editable")?.textContent?.trim() || "",
+    documentType: "purchase_order",
+    country: document.getElementById("country-select")?.value || "QA",
+    language: "en",
+    currency: { code: currencyCode, exchangeRate: 1 },
+    issueDate: document.getElementById("po-date")?.value || "",
+    requiredDeliveryDate: document.getElementById("po-req-date")?.value || "",
+    status: "",
+    version: "1",
+    buyer,
+    supplier,
+    items,
+    taxes: [{ category: "S", amount: vatAmount, taxableAmount: subtotal }],
+    total: {
+      subtotal: subtotal,
+      discount: discountAmt,
+      taxableAmount: subtotal - discountAmt,
+      tax: vatAmount,
+      grandTotal: grandTotal,
+      amountPaid: 0,
+      amountDue: grandTotal
+    },
+    shipping: {
+      amount: parseFloat(document.getElementById("sum-freight")?.textContent) || 0
+    },
+    payment: {
+      terms: document.querySelector(".bento-card:nth-child(2) .info-row:nth-child(1) .editable")?.textContent?.trim() || ""
+    },
+    deliveryTerms: document.querySelector(".bento-card:nth-child(2) .info-row:nth-child(2) .editable")?.textContent?.trim() || "",
+    references: [],
+    notes: document.getElementById("profile-footer")?.textContent?.trim() || ""
+  };
 }

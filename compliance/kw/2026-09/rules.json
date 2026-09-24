@@ -1,0 +1,17 @@
+{
+  "country": "KW",
+  "country_name": "Kuwait",
+  "version": "2026-09",
+  "effective_from": "2026-09-01",
+  "currency": "KWD",
+  "vat_rate": 0.05,
+  "required_fields": [
+    "seller.name",
+    "id",
+    "issueDate",
+    "items",
+    "total.grandTotal"
+  ],
+  "notes": "Kuwait configuration is country-specific and does not assume another GCC country's technical requirements.",
+  "status": "APPLICATION_VALIDATED"
+}

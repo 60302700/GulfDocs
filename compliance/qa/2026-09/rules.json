@@ -1,0 +1,17 @@
+{
+  "country": "QA",
+  "country_name": "Qatar",
+  "version": "2026-09",
+  "effective_from": "2026-09-01",
+  "currency": "QAR",
+  "vat_rate": 0.05,
+  "required_fields": [
+    "seller.name",
+    "id",
+    "issueDate",
+    "items",
+    "total.grandTotal"
+  ],
+  "notes": "Qatar rules are country-aware defaults for application validation. Official e-invoice technical requirements remain pending verification.",
+  "status": "APPLICATION_VALIDATED"
+}

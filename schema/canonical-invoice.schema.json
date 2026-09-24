@@ -1,0 +1,104 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Canonical Invoice Model",
+  "type": "object",
+  "required": [
+    "document_id",
+    "document_type",
+    "issue_date",
+    "seller",
+    "buyer",
+    "line_items",
+    "currency"
+  ],
+  "properties": {
+    "document_id": { "type": "string" },
+    "document_type": { "type": "string" },
+    "document_version": { "type": "string" },
+    "invoice_number": { "type": "string" },
+    "issue_date": { "type": "string", "format": "date" },
+    "supply_date": { "type": ["string", "null"], "format": "date" },
+    "due_date": { "type": ["string", "null"], "format": "date" },
+    "currency": { "type": "string" },
+    "exchange_rate": { "type": ["number", "null"] },
+
+    "seller": {
+      "type": "object",
+      "required": ["legal_name"],
+      "properties": {
+        "legal_name": { "type": "string" },
+        "trading_name": { "type": "string" },
+        "tax_id": { "type": "string" },
+        "registration_number": { "type": "string" },
+        "address": { "type": "string" },
+        "country": { "type": "string" },
+        "contact": { "type": "string" }
+      }
+    },
+
+    "buyer": {
+      "type": "object",
+      "properties": {
+        "legal_name": { "type": "string" },
+        "tax_id": { "type": "string" },
+        "registration_number": { "type": "string" },
+        "address": { "type": "string" },
+        "country": { "type": "string" },
+        "contact": { "type": "string" }
+      }
+    },
+
+    "transaction": {
+      "type": "object",
+      "properties": {
+        "transaction_type": { "type": "string", "enum": ["B2B", "B2C", "B2G"] },
+        "nature": { "type": "string" }
+      }
+    },
+
+    "line_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["description", "quantity", "unit_price"],
+        "properties": {
+          "description": { "type": "string" },
+          "sku": { "type": "string" },
+          "quantity": { "type": "number" },
+          "unit_price": { "type": "number" },
+          "taxes": { "type": "array" }
+        }
+      }
+    },
+
+    "discounts": { "type": "array" },
+    "charges": { "type": "array" },
+    "taxes": { "type": "array" },
+    "subtotal": { "type": "number" },
+    "tax_total": { "type": "number" },
+    "grand_total": { "type": "number" },
+
+    "payment": { "type": "object" },
+
+    "references": {
+      "type": "object",
+      "properties": {
+        "purchase_order": { "type": "string" },
+        "contract": { "type": "string" },
+        "original_invoice": { "type": "string" }
+      }
+    },
+
+    "compliance": {
+      "type": "object",
+      "properties": {
+        "country": { "type": "string" },
+        "rules_version": { "type": "string" },
+        "uuid": { "type": "string" },
+        "qr_data": { "type": ["string", "null"] },
+        "signature": { "type": ["string", "null"] },
+        "government_status": { "type": "string" }
+      }
+    }
+  }
+}

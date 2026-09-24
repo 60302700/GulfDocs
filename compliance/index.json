@@ -1,0 +1,11 @@
+{
+  "countries": [
+    { "code": "QA", "name": "Qatar" },
+    { "code": "AE", "name": "United Arab Emirates" },
+    { "code": "SA", "name": "Saudi Arabia" },
+    { "code": "BH", "name": "Bahrain" },
+    { "code": "KW", "name": "Kuwait" },
+    { "code": "OM", "name": "Oman" }
+  ],
+  "status": "APPLICATION_VALIDATED"
+}

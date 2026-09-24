@@ -98,9 +98,9 @@ function loadLogo(event) {
 
 function exportBusinessProfile() {
   const profile = {
-    name: document.getElementById("profile-name")?.innerText || "",
-    trn: document.getElementById("profile-trn")?.innerText || "",
-    footer: document.getElementById("profile-footer")?.innerText || "",
+    name: document.getElementById("profile-name")?.textContent || "",
+    trn: document.getElementById("profile-trn")?.textContent || "",
+    footer: document.getElementById("profile-footer")?.textContent || "",
     logo: document.getElementById("brand-logo")?.src || "",
     currency: document.getElementById("currency-select")?.value || "QAR",
     theme:
@@ -126,10 +126,10 @@ function importBusinessProfile(event) {
       const p = JSON.parse(e.target.result);
 
       // Apply standard profile fields
-      if (p.name) document.getElementById("profile-name").innerText = p.name;
-      if (p.trn) document.getElementById("profile-trn").innerText = p.trn;
+      if (p.name) document.getElementById("profile-name").textContent = p.name;
+      if (p.trn) document.getElementById("profile-trn").textContent = p.trn;
       if (p.footer)
-        document.getElementById("profile-footer").innerText = p.footer;
+        document.getElementById("profile-footer").textContent = p.footer;
       if (p.currency) {
         document.getElementById("currency-select").value = p.currency;
         updateCurrency();
@@ -146,4 +146,76 @@ function importBusinessProfile(event) {
     }
   };
   reader.readAsText(file);
+}
+
+
+function buildCanonicalPayslip() {
+  const employer = {
+    name: document.getElementById("profile-name")?.textContent?.trim() || "",
+    registrationNumber: document.getElementById("profile-trn")?.textContent?.trim() || "",
+    address: { raw: document.getElementById("profile-address")?.textContent?.trim() || "" },
+    contact: {
+      phone: document.getElementById("profile-phone")?.textContent?.trim() || "",
+      email: document.getElementById("profile-email")?.textContent?.trim() || ""
+    }
+  };
+
+  const employeeName = document.querySelector(".bento-card .editable")?.textContent?.trim() || "";
+  const employeeId = document.querySelector(".bento-card .info-row:nth-child(2) .editable")?.textContent?.trim() || "";
+  const employeeBank = document.querySelector(".bento-card .info-row:nth-child(3) .editable")?.textContent?.trim() || "";
+  
+  const employee = {
+    name: employeeName,
+    id: employeeId,
+    contact: {},
+    address: {}
+  };
+
+  const earnings = [];
+  document.querySelectorAll("#earnings-list > div").forEach(div => {
+     const desc = div.querySelector(".editable")?.textContent?.trim() || "";
+     const amt = parseFloat(div.querySelector(".earning-amount").value) || 0;
+     earnings.push({ description: desc, amount: amt });
+  });
+
+  const deductions = [];
+  document.querySelectorAll("#deductions-list > div").forEach(div => {
+     const desc = div.querySelector(".editable")?.textContent?.trim() || "";
+     const amt = parseFloat(div.querySelector(".deduction-amount").value) || 0;
+     deductions.push({ description: desc, amount: amt });
+  });
+
+  const currencyCode = document.getElementById("currency-select")?.value || "QAR";
+
+  return {
+    id: document.querySelector(".inv-meta .meta-grid .editable")?.textContent?.trim() || "",
+    documentType: "payslip",
+    country: document.getElementById("country-select")?.value || "QA",
+    language: "en",
+    currency: { code: currencyCode, exchangeRate: 1 },
+    issueDate: document.getElementById("pay-date")?.value || new Date().toISOString().slice(0, 10),
+    status: "",
+    version: "1",
+    employer,
+    employee,
+    payPeriod: document.getElementById("pay-period")?.value || "",
+    payDate: document.getElementById("pay-date")?.value || "",
+    basicSalary: earnings.length > 0 ? earnings[0].amount : 0, // approximation based on basic
+    allowances: earnings.slice(1),
+    overtime: [],
+    bonus: [],
+    commission: [],
+    grossPay: parseFloat(document.getElementById("sum-gross")?.textContent) || 0,
+    deductions: deductions,
+    employeeContributions: [],
+    employerContributions: [],
+    netPay: parseFloat(document.getElementById("sum-net")?.textContent) || 0,
+    payment: {
+      bankAccount: { bankName: employeeBank },
+      method: "Bank Transfer",
+      reference: ""
+    },
+    references: [],
+    notes: document.getElementById("profile-footer")?.textContent?.trim() || ""
+  };
 }

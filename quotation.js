@@ -78,9 +78,9 @@ function loadLogo(event) {
 
 function exportBusinessProfile() {
     const profile = {
-        name: document.getElementById('profile-name')?.innerText || '',
-        trn: document.getElementById('profile-trn')?.innerText || '',
-        footer: document.getElementById('profile-footer')?.innerText || '',
+        name: document.getElementById('profile-name')?.textContent || '',
+        trn: document.getElementById('profile-trn')?.textContent || '',
+        footer: document.getElementById('profile-footer')?.textContent || '',
         logo: document.getElementById('brand-logo')?.src || '',
         currency: document.getElementById('currency-select')?.value || 'QAR', theme: typeof ThemeManager !== 'undefined' ? ThemeManager.getThemeObject() : null
     };
@@ -99,9 +99,9 @@ function importBusinessProfile(event) {
             const p = JSON.parse(e.target.result);
 
             // Apply standard profile fields
-            if (p.name) document.getElementById('profile-name').innerText = p.name;
-            if (p.trn) document.getElementById('profile-trn').innerText = p.trn;
-            if (p.footer) document.getElementById('profile-footer').innerText = p.footer;
+            if (p.name) document.getElementById('profile-name').textContent = p.name;
+            if (p.trn) document.getElementById('profile-trn').textContent = p.trn;
+            if (p.footer) document.getElementById('profile-footer').textContent = p.footer;
             if (p.currency) { document.getElementById('currency-select').value = p.currency; updateCurrency(); }
             if (p.logo && p.logo.startsWith('data:')) {
                 const el = document.getElementById('brand-logo');
@@ -109,8 +109,96 @@ function importBusinessProfile(event) {
                 document.getElementById('logo-placeholder').style.display = 'none';
             }
             if (p.theme && typeof ThemeManager !== 'undefined') ThemeManager.applyThemeObject(p.theme);
-            }
         } catch (err) { alert("Invalid profile file."); }
     };
     reader.readAsText(file);
+}
+
+
+function buildCanonicalQuotation() {
+  const seller = {
+    name: document.getElementById("profile-name")?.textContent?.trim() || "",
+    registrationNumber: "",
+    taxIdentity: { taxId: document.getElementById("profile-trn")?.textContent?.trim() || "", taxIdType: "VAT" },
+    address: { raw: document.getElementById("profile-address")?.textContent?.trim() || "" },
+    contact: { 
+      phone: document.getElementById("profile-phone")?.textContent?.trim() || "",
+      email: document.getElementById("profile-email")?.textContent?.trim() || ""
+    }
+  };
+
+  const buyerEl = document.querySelector(".bento-card .editable");
+  const buyerPhoneEl = document.querySelector(".bento-card .info-row:nth-child(2) .editable");
+  const buyerEmailEl = document.querySelector(".bento-card .info-row:nth-child(3) .editable");
+  
+  const buyer = {
+    name: buyerEl ? buyerEl.textContent.trim() : "",
+    taxIdentity: { taxId: "", taxIdType: "VAT" },
+    address: { raw: "" },
+    contact: {
+      phone: buyerPhoneEl ? buyerPhoneEl.textContent.trim() : "",
+      email: buyerEmailEl ? buyerEmailEl.textContent.trim() : ""
+    }
+  };
+
+  const items = [];
+  document.querySelectorAll("#items-tbody tr").forEach((row, idx) => {
+    const desc = row.querySelector("td div.editable")?.textContent?.trim() || "";
+    // Quotations in the UI have title + detailed desc
+    const desc2 = row.querySelector("td div.optional")?.textContent?.trim() || "";
+    const qty = parseFloat(row.querySelector(".qty-input").value) || 0;
+    const price = parseFloat(row.querySelector(".price-input").value) || 0;
+    const itemTotal = qty * price;
+    
+    items.push({
+      id: String(idx + 1),
+      description: desc + (desc2 ? " - " + desc2 : ""),
+      code: "",
+      quantity: qty,
+      unit: "EA",
+      unitPrice: price,
+      discount: { amount: 0 },
+      tax: { category: "S", rate: 0, amount: 0, taxableAmount: itemTotal },
+      netAmount: itemTotal,
+      totalAmount: itemTotal
+    });
+  });
+
+  const currencyCode = document.getElementById("currency-select")?.value || "QAR";
+  const subtotal = parseFloat(document.getElementById("sum-subtotal")?.textContent) || 0;
+  const vatAmount = parseFloat(document.getElementById("sum-vat")?.textContent) || 0;
+  const discountInput = document.getElementById("in-discount");
+  const discountAmt = discountInput ? (parseFloat(discountInput.value) || 0) : 0;
+  const grandTotal = parseFloat(document.getElementById("sum-total")?.textContent) || 0;
+
+  return {
+    id: document.querySelector(".inv-meta .meta-grid .editable")?.textContent?.trim() || "",
+    documentType: "quotation",
+    country: document.getElementById("country-select")?.value || "QA",
+    language: "en",
+    currency: { code: currencyCode, exchangeRate: 1 },
+    issueDate: document.getElementById("qt-date")?.value || "",
+    validUntil: document.getElementById("qt-expiry")?.value || "",
+    status: "",
+    version: "1",
+    seller,
+    buyer,
+    items,
+    taxes: [{ category: "S", amount: vatAmount, taxableAmount: subtotal }],
+    total: {
+      subtotal: subtotal,
+      discount: discountAmt,
+      taxableAmount: subtotal - discountAmt,
+      tax: vatAmount,
+      grandTotal: grandTotal,
+      amountPaid: 0,
+      amountDue: grandTotal
+    },
+    payment: {
+      terms: document.querySelector(".bento-card:nth-child(2) .info-row:nth-child(1) .editable")?.textContent?.trim() || "", 
+      method: ""
+    },
+    references: [],
+    notes: document.getElementById("profile-footer")?.textContent?.trim() || ""
+  };
 }

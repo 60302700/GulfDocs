@@ -1,0 +1,18 @@
+{
+  "country": "AE",
+  "country_name": "United Arab Emirates",
+  "version": "2026-09",
+  "effective_from": "2026-09-01",
+  "currency": "AED",
+  "vat_rate": 0.05,
+  "required_fields": [
+    "seller.name",
+    "seller.taxIdentity.taxId",
+    "id",
+    "issueDate",
+    "items",
+    "total.grandTotal"
+  ],
+  "notes": "UAE invoice rules are kept separate from structured e-invoicing requirements.",
+  "status": "APPLICATION_VALIDATED"
+}

@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Saudi ZATCA (skeleton)",
+  "type": "object",
+  "required": [
+    "seller",
+    "invoice_number",
+    "issue_date",
+    "line_items",
+    "grand_total"
+  ],
+  "properties": {
+    "seller": { "type": "object" },
+    "buyer": { "type": "object" },
+    "invoice_number": { "type": "string" },
+    "issue_date": { "type": "string" },
+    "line_items": { "type": "array" },
+    "grand_total": { "type": "number" }
+  }
+}

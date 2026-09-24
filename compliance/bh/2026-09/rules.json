@@ -1,0 +1,17 @@
+{
+  "country": "BH",
+  "country_name": "Bahrain",
+  "version": "2026-09",
+  "effective_from": "2026-09-01",
+  "currency": "BHD",
+  "vat_rate": 0.05,
+  "required_fields": [
+    "seller.name",
+    "id",
+    "issueDate",
+    "items",
+    "total.grandTotal"
+  ],
+  "notes": "Bahrain rules are isolated and do not inherit Saudi or UAE rules.",
+  "status": "APPLICATION_VALIDATED"
+}

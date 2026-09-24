@@ -1,0 +1,18 @@
+country: SA
+version: 2026-01
+effective_from: 2026-01-01
+authority: ZATCA
+source_url: https://zatca.gov.sa/en/E-Invoicing/SystemsDevelopers/Pages/E-Invoice-specifications.aspx
+required_fields:
+  - seller.tax_id
+  - seller.legal_name
+  - invoice_number
+  - issue_date
+  - line_items
+  - grand_total
+optional_fields:
+  - buyer.tax_id
+  - qr
+notes: |
+  This is a skeleton rule package for Saudi Arabia (ZATCA). Implement ZATCA XML
+  field mapping and signing in the exporter module.

@@ -92,9 +92,9 @@ function loadLogo(event) {
 
 function exportBusinessProfile() {
   const profile = {
-    name: document.getElementById("profile-name")?.innerText || "",
-    trn: document.getElementById("profile-trn")?.innerText || "",
-    footer: document.getElementById("profile-footer")?.innerText || "",
+    name: document.getElementById("profile-name")?.textContent || "",
+    trn: document.getElementById("profile-trn")?.textContent || "",
+    footer: document.getElementById("profile-footer")?.textContent || "",
     logo: document.getElementById("brand-logo")?.src || "",
     currency: document.getElementById("currency-select")?.value || "QAR",
     theme:
@@ -119,10 +119,10 @@ function importBusinessProfile(event) {
       const p = JSON.parse(e.target.result);
 
       // Apply standard profile fields
-      if (p.name) document.getElementById("profile-name").innerText = p.name;
-      if (p.trn) document.getElementById("profile-trn").innerText = p.trn;
+      if (p.name) document.getElementById("profile-name").textContent = p.name;
+      if (p.trn) document.getElementById("profile-trn").textContent = p.trn;
       if (p.footer)
-        document.getElementById("profile-footer").innerText = p.footer;
+        document.getElementById("profile-footer").textContent = p.footer;
       if (p.currency) {
         document.getElementById("currency-select").value = p.currency;
         updateCurrency();
@@ -139,4 +139,61 @@ function importBusinessProfile(event) {
     }
   };
   reader.readAsText(file);
+}
+
+
+function buildCanonicalBillingDetails() {
+  const beneficiary = {
+    name: document.getElementById("profile-name")?.textContent?.trim() || "",
+    registrationNumber: "",
+    taxIdentity: { taxId: document.getElementById("profile-trn")?.textContent?.trim() || "", taxIdType: "VAT" },
+    address: { raw: document.getElementById("profile-address")?.textContent?.trim() || "" },
+    contact: { 
+      phone: document.getElementById("profile-phone")?.textContent?.trim() || "",
+      email: document.getElementById("profile-email")?.textContent?.trim() || ""
+    }
+  };
+
+  const bdBank = document.getElementById('bd-bank')?.textContent?.trim() || '';
+  const bdIban = document.getElementById('bd-iban')?.textContent?.trim() || '';
+  const bdSwift = document.getElementById('bd-swift')?.textContent?.trim() || '';
+  const bdAcc = document.getElementById('bd-account')?.textContent?.trim() || '';
+
+  const bankAccount = {
+    bankName: bdBank,
+    branch: "",
+    accountName: beneficiary.name,
+    accountNumber: bdAcc,
+    iban: bdIban,
+    swiftBic: bdSwift
+  };
+
+  const currencyCode = document.getElementById("currency-select")?.value || "QAR";
+  const amount = parseFloat(document.getElementById("sum-total")?.textContent) || 0;
+
+  return {
+    id: document.querySelector(".inv-meta .meta-grid .editable")?.textContent?.trim() || "",
+    documentType: "billing_details",
+    country: document.getElementById("country-select")?.value || "QA",
+    language: "en",
+    currency: { code: currencyCode, exchangeRate: 1 },
+    issueDate: document.getElementById("bd-date")?.value || "",
+    status: "",
+    version: "1",
+    beneficiary,
+    bankAccount,
+    amount,
+    paymentReference: document.querySelector(".bento-card:nth-child(2) .info-row:nth-child(3) .editable")?.textContent?.trim() || "",
+    dueDate: document.getElementById("bd-due-date")?.value || "",
+    paymentSchedule: [],
+    payment: {
+      bankAccount,
+      method: "Bank Transfer"
+    },
+    items: [],
+    taxes: [],
+    total: { grandTotal: amount },
+    references: [],
+    notes: document.getElementById("profile-footer")?.textContent?.trim() || ""
+  };
 }
