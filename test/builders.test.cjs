@@ -21,6 +21,7 @@ const filesToTest = [
 
     const dom = new JSDOM(htmlCode, { runScripts: "dangerously" });
     const window = dom.window;
+    window.__TEST_ENV__ = true;
     
     const scriptEl = window.document.createElement("script");
     scriptEl.textContent = jsCode;

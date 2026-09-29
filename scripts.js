@@ -18,12 +18,25 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   // Initialize correct currency
   updateCurrency();
-  // Load compliance index
-  loadComplianceIndex();
+  // Load compliance index and initialize rules
+  if (typeof fetch === "function") {
+    loadComplianceIndex().then(() => {
+      if (typeof onCountryChange === "function") {
+        onCountryChange();
+      }
+    }).catch(() => {});
+  }
   // Add first row
   addRow();
   // Restore saved profile from localStorage
   loadProfileFromStorage();
+  // Attach validation listeners & perform initial validation
+  if (typeof attachValidationListeners === "function") {
+    attachValidationListeners();
+  }
+  if (typeof validateAndRender === "function" && typeof window !== "undefined" && !window.__TEST_ENV__) {
+    validateAndRender().catch(() => {});
+  }
 });
 
 // ─── Currency ─────────────────────────────────────────────────────────────────
@@ -76,25 +89,30 @@ async function onCountryChange() {
     updateCurrency();
   }
 
+  const docType = document.getElementById("doc-type-select")?.value || "invoice";
+  const txnType = document.getElementById("transaction-type")?.value || "B2B";
+
   try {
-    const rulesPath = `/compliance/${countryKey.toLowerCase()}/2026-09/rules.json`;
-    const res = await fetch(rulesPath);
-    ACTIVE_RULES = await res.json();
-    console.info("Loaded rules for", countryKey, ACTIVE_RULES);
-    await validateAndRender();
+    const { getRules } = await import("./rules/index.js");
+    ACTIVE_RULES = await getRules({
+      country: countryKey,
+      documentType: docType,
+      transactionType: txnType,
+    });
+    console.info("Loaded rules engine for", countryKey, ACTIVE_RULES);
   } catch (err) {
     console.warn("Could not load rules for", countryKey, err);
-    ACTIVE_RULES = null;
-    await validateAndRender();
   }
+
+  await validateAndRender();
 }
 
 function onDocTypeChange() {
-  // placeholder for future doc-type UI changes
+  validateAndRender();
 }
 
 function onTransactionTypeChange() {
-  // placeholder for txn-type UI changes
+  validateAndRender();
 }
 
 function validateBeforeExport() {
@@ -181,11 +199,34 @@ async function exportDocument(format = "json") {
 }
 
 async function validateAndRender() {
-  if (!ACTIVE_RULES) {
-    // try to load for selected country
-    await onCountryChange();
+  const sel = document.getElementById("country-select");
+  const countryKey = String(sel?.value || "QA").toUpperCase();
+  const docType = document.getElementById("doc-type-select")?.value || "invoice";
+  const txnType = document.getElementById("transaction-type")?.value || "B2B";
+
+  if (!ACTIVE_RULES || ACTIVE_RULES.country !== countryKey) {
+    try {
+      const { getRules } = await import("./rules/index.js");
+      ACTIVE_RULES = await getRules({
+        country: countryKey,
+        documentType: docType,
+        transactionType: txnType,
+      });
+    } catch (e) {
+      console.warn("Failed to load rules", e);
+    }
   }
-  const result = performValidation();
+
+  let result;
+  try {
+    const { validateDocument } = await import("./rules/engine.js");
+    const canonical = buildCanonicalInvoice();
+    result = validateDocument(canonical, ACTIVE_RULES || {});
+  } catch (e) {
+    console.warn("Falling back to local performValidation", e);
+    result = performValidation();
+  }
+
   renderValidationPanel(result);
   return result.valid;
 }

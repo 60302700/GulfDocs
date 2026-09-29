@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
-        <div style="display:flex; gap:8px; align-items:center">
-          <button onclick="exportDocument('pdf')"
+  <head>
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Invoice Generator | GulfDocs</title>
     <!-- Fallback CSP for static hosting; keep in sync with the helmet config in server.js -->
@@ -17,11 +17,9 @@
     <script src="scripts.js" defer></script>
     <script src="theme-manager.js" defer></script>
     <script src="cookie-consent.js" defer></script>
+    <script type="module" src="ad-manager.js" defer></script>
   </head>
-
-        </button>
-        <button onclick="exportDocument('json')" style="padding:8px 14px; font-weight:700; background:#fff; border:1px solid var(--doc-border); border-radius:8px;">Export JSON</button>
-        </div>
+  <body>
     <!-- NAV -->
     <nav class="no-print">
       <div style="display: flex; align-items: center; gap: 16px">
@@ -450,10 +448,6 @@
           </div>
         </header>
 
-        <script>
-          attachValidationListeners();
-          validateAndRender();
-        </script>
 
         <!-- Bento section -->
         <section class="bento-grid" style="margin: 20px">

@@ -3,9 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>
-      Free GCC Business Document Generator | Invoice, Payslip, PO & More
-    </title>
+    <title>GCC Business Documents | Free Invoice, Payslip & PO Generator</title>
     <!-- Fallback CSP for static hosting; keep in sync with the helmet config in server.js -->
     <meta
       http-equiv="Content-Security-Policy"
@@ -13,19 +11,18 @@
     />
     <meta
       name="description"
-      content="Generate free professional business documents for Qatar, UAE and GCC. Create invoices, payslips, purchase orders, quotations and billing details instantly. No signup. Download as PDF."
+      content="Free GCC business document generator for Qatar, UAE, Saudi Arabia, Bahrain, Kuwait, and Oman. Create invoices, payslips, purchase orders, quotations, and billing details instantly with zero signup."
     />
+    <meta property="og:title" content="GCC Business Documents | Free Document Generator" />
+    <meta property="og:description" content="Free GCC business document generator for Qatar, UAE, Saudi Arabia, Bahrain, Kuwait, and Oman. Create invoices, payslips, purchase orders, quotations, and billing details instantly." />
+    <meta property="og:type" content="website" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;700&family=Cairo:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css" />
-    <!--
-        ADSENSE SETUP (once approved): paste your AdSense verification meta tag
-        and the Auto ads <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"> tag here.
-        Do not add this until the site has been reviewed/approved by Google AdSense.
-    -->
     <script src="cookie-consent.js" defer></script>
+    <script type="module" src="ad-manager.js" defer></script>
   </head>
 
   <body>
@@ -35,12 +32,12 @@
       <div class="nav-badges">
         <span class="nav-badge blue">Free Forever</span>
         <span class="nav-badge">No Signup</span>
+        <span class="nav-badge" style="background:#f1f5f9; color:#475569;">Client-Side</span>
       </div>
     </nav>
 
     <!-- AD TOP (728x90 leaderboard) -->
     <div class="ad-top">
-      <!-- Google AdSense leaderboard ad goes here -->
       <div class="ad-placeholder">Advertisement — 728×90</div>
     </div>
 
@@ -54,10 +51,8 @@
       </div>
       <h1>Professional documents,<br /><span>generated instantly.</span></h1>
       <p>
-        Free GCC business document generator for Qatar, UAE, Saudi Arabia,
-        Bahrain, Kuwait and Oman. Your data stays in the browser, and each
-        document is validated against the configured country rules before
-        export.
+        Free business document generator for Qatar, UAE, Saudi Arabia,
+        Bahrain, Kuwait, and Oman. No account needed. Your data never leaves your browser, and every document is validated against country rules prior to export.
       </p>
       <div class="hero-stats">
         <div class="stat">
@@ -65,23 +60,23 @@
           <div class="stat-label">Document Types</div>
         </div>
         <div class="stat">
+          <div class="stat-num">6</div>
+          <div class="stat-label">GCC Countries</div>
+        </div>
+        <div class="stat">
           <div class="stat-num">0s</div>
           <div class="stat-label">Server Processing</div>
         </div>
         <div class="stat">
-          <div class="stat-num">Free</div>
-          <div class="stat-label">Forever</div>
-        </div>
-        <div class="stat">
-          <div class="stat-num">QAR</div>
-          <div class="stat-label">GCC Currency</div>
+          <div class="stat-num">100%</div>
+          <div class="stat-label">Private & In-Browser</div>
         </div>
       </div>
     </section>
 
     <!-- TOOLS GRID -->
     <section class="tools-section">
-      <p class="section-label">Choose a document</p>
+      <p class="section-label">Choose a document generator</p>
       <div class="tools-grid">
         <a href="/invoice.html" class="tool-card blue">
           <div class="tool-icon blue">
@@ -103,8 +98,7 @@
           </div>
           <div class="tool-name">Invoice Generator</div>
           <div class="tool-desc">
-            Professional invoices with country-aware tax, business and payment
-            fields.
+            Professional invoices with country-specific tax, business and payment fields.
           </div>
           <div class="tool-arrow">→</div>
         </a>
@@ -127,8 +121,7 @@
           </div>
           <div class="tool-name">Payslip Generator</div>
           <div class="tool-desc">
-            Employee payslips with earnings, deductions, net pay and payroll
-            fields.
+            Employee payslips with earnings, deductions and net pay.
           </div>
           <div class="tool-arrow">→</div>
         </a>
@@ -150,8 +143,7 @@
           </div>
           <div class="tool-name">Quotation Generator</div>
           <div class="tool-desc">
-            Professional price quotes and estimates for GCC clients and
-            projects.
+            Professional quotes and estimates for GCC clients and projects.
           </div>
           <div class="tool-arrow">→</div>
         </a>
@@ -173,8 +165,7 @@
           </div>
           <div class="tool-name">Purchase Order</div>
           <div class="tool-desc">
-            Supplier purchase orders with item details, pricing and delivery
-            terms.
+            Supplier purchase orders with item, pricing and tax details.
           </div>
           <div class="tool-arrow">→</div>
         </a>
@@ -195,7 +186,7 @@
           </div>
           <div class="tool-name">Billing Details</div>
           <div class="tool-desc">
-            Bank settlement instructions with IBAN, SWIFT and payment schedules.
+            Professional payment instructions with IBAN, SWIFT and settlement details.
           </div>
           <div class="tool-arrow">→</div>
         </a>
@@ -217,127 +208,108 @@
       <div class="how-inner">
         <h2>How it works</h2>
         <p>
-          Generate a professional document in under 2 minutes. No account. No
-          cloud. No cost.
+          Generate a professional document in under 2 minutes. No account. No cloud storage. Purely in your browser.
         </p>
         <div class="steps">
           <div class="step">
             <div class="step-num">1</div>
-            <h3>Choose document</h3>
+            <h3>Choose Country & Doc</h3>
             <p>
-              Pick from invoice, payslip, quotation, purchase order or billing
-              details.
+              Select your GCC jurisdiction (QA, AE, SA, BH, KW, OM) and document type.
             </p>
           </div>
           <div class="step">
             <div class="step-num">2</div>
-            <h3>Fill the form</h3>
+            <h3>Enter Details</h3>
             <p>
-              Enter your company details, client info and line items. Live
-              preview updates instantly.
+              Fill business information, customer info, and line items with live preview.
             </p>
           </div>
           <div class="step">
             <div class="step-num">3</div>
-            <h3>Download PDF</h3>
+            <h3>Review Validation</h3>
             <p>
-              Click download. Your professional document saves directly to your
-              device.
+              The built-in rules engine checks math and required fields in real time.
             </p>
           </div>
           <div class="step">
             <div class="step-num">4</div>
-            <h3>Send to client</h3>
+            <h3>Export Instantly</h3>
             <p>
-              Email or WhatsApp the PDF directly. Ready for business use
-              immediately.
+              Download high-resolution printable PDF or canonical JSON directly to your device.
             </p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- SEO CONTENT SECTION -->
-    <section class="seo-section">
-      <h2>Free Business Document Generator for Qatar & GCC</h2>
-      <p>
-        Creating professional business documents in Qatar, UAE and Saudi Arabia
-        has never been easier. GulfDocs is a free online tool that lets small
-        businesses, freelancers and HR teams generate invoices, payslips,
-        purchase orders, quotations and billing details in seconds — with no
-        signup required.
-      </p>
-      <p>
-        Every document is formatted to GCC business standards — QAR currency, 5%
-        VAT support, IBAN and SWIFT fields, Arabic and English bilingual
-        footers, and WPS-compliant payslip formats. Your data is processed
-        entirely in your browser and never sent to any server.
-      </p>
-
-      <div class="seo-grid">
-        <div class="seo-card">
-          <h3>Invoice Generator Qatar</h3>
-          <p>
-            Generate VAT-compliant tax invoices for Qatar businesses. Includes
-            QAR currency, TRN fields, IBAN payment details and authorized
-            signatory sections required by GCC clients.
-          </p>
+    <!-- FAQ SECTION -->
+    <section class="seo-section" style="max-width: 900px; margin: 0 auto 60px; padding: 0 20px;">
+      <h2 style="font-family: 'Sora', sans-serif; font-size: 26px; font-weight: 700; margin-bottom: 24px; color: var(--text-primary); text-align: center;">Frequently Asked Questions</h2>
+      <div style="display: grid; gap: 16px;">
+        <div style="background: #ffffff; border: 1px solid var(--border); border-radius: 10px; padding: 20px;">
+          <h3 style="font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">Is it free?</h3>
+          <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin: 0;">Yes, GCC Business Documents is completely free to use for all individuals and businesses across the GCC.</p>
         </div>
-        <div class="seo-card">
-          <h3>Free Payslip Generator GCC</h3>
-          <p>
-            Create WPS-compliant employee payslips for Qatar, UAE and Saudi
-            Arabia. Includes earnings, deductions, net pay and bank transfer
-            details for every employee.
-          </p>
+        <div style="background: #ffffff; border: 1px solid var(--border); border-radius: 10px; padding: 20px;">
+          <h3 style="font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">Do I need an account?</h3>
+          <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin: 0;">No account or registration is required. You can create and export documents immediately without logging in or providing an email address.</p>
         </div>
-        <div class="seo-card">
-          <h3>Purchase Order Template GCC</h3>
-          <p>
-            Generate professional purchase orders with vendor details, item
-            specifications, VAT breakdown and delivery terms — formatted for GCC
-            procurement standards.
-          </p>
+        <div style="background: #ffffff; border: 1px solid var(--border); border-radius: 10px; padding: 20px;">
+          <h3 style="font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">Does my data leave my browser?</h3>
+          <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin: 0;">No. All document creation, calculations, rules validation, and exports happen locally inside your web browser. Your financial, employee, and business data is never transmitted to our servers.</p>
         </div>
-        <div class="seo-card">
-          <h3>Quotation Format Qatar</h3>
-          <p>
-            Create professional price quotations for Qatar and GCC clients.
-            Includes project reference, payment terms, VAT and client approval
-            signature section.
-          </p>
+        <div style="background: #ffffff; border: 1px solid var(--border); border-radius: 10px; padding: 20px;">
+          <h3 style="font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">Which countries are supported?</h3>
+          <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin: 0;">All six Gulf Cooperation Council (GCC) countries are supported: Qatar (QA), United Arab Emirates (AE), Saudi Arabia (SA), Bahrain (BH), Kuwait (KW), and Oman (OM).</p>
+        </div>
+        <div style="background: #ffffff; border: 1px solid var(--border); border-radius: 10px; padding: 20px;">
+          <h3 style="font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">Which documents are supported?</h3>
+          <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin: 0;">We support 5 essential business documents: Invoices, Employee Payslips, Quotations & Estimates, Purchase Orders, and Bank Billing Details.</p>
+        </div>
+        <div style="background: #ffffff; border: 1px solid var(--border); border-radius: 10px; padding: 20px;">
+          <h3 style="font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">Can I generate PDFs and JSON?</h3>
+          <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin: 0;">Yes. Every document can be exported as a professional, print-ready PDF or as a structured, canonical JSON file for backup and re-import.</p>
+        </div>
+        <div style="background: #ffffff; border: 1px solid var(--border); border-radius: 10px; padding: 20px;">
+          <h3 style="font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">Are structured e-invoices supported?</h3>
+          <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin: 0;">Structured e-invoice export (UBL 2.1 XML with 5-tag TLV QR Code) is supported for Saudi Arabia (ZATCA Phase 1 structure). For other countries, official client-side structured specifications are not open or require accredited service provider routing.</p>
+        </div>
+        <div style="background: #ffffff; border: 1px solid var(--border); border-radius: 10px; padding: 20px;">
+          <h3 style="font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">Does the app submit invoices to governments?</h3>
+          <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin: 0;">No. The application generates files offline. Government clearance, live portal reporting, and cryptographic stamping require authorized tax authority API keys and private certificates which must never reside in client-side applications.</p>
+        </div>
+        <div style="background: #ffffff; border: 1px solid var(--border); border-radius: 10px; padding: 20px;">
+          <h3 style="font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">Is this government-certified?</h3>
+          <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin: 0;">No. GulfDocs provides document templates and formatting based on published regional business rules. We are not a government agency, accounting firm, or certified tax agent.</p>
         </div>
       </div>
     </section>
 
     <!-- FOOTER -->
     <footer>
-      <div class="footer-brand">GulfDocs.</div>
+      <div class="footer-brand">GCC Business Documents</div>
       <p>
-        Free GCC business document generator. No signup. No data stored. Forever
-        free.
+        Free GCC business document generator. No signup. No data stored. Forever free.
       </p>
       <div class="footer-links">
         <a href="/privacy-policy.html">Privacy Policy</a>
         <a href="/terms-of-use.html">Terms of Use</a>
-        <a href="mailto:abdullah123bin@gmail.com">Contact</a>
-
         <a href="/about-us.html">About Us</a>
       </div>
       <p
         style="
-          font-size: 11.5px;
+          font-size: 12px;
           color: var(--text-muted);
-          max-width: 560px;
-          margin: 12px auto 0;
+          max-width: 640px;
+          margin: 14px auto 0;
+          line-height: 1.6;
         "
       >
-        GulfDocs formats documents for you but is not a substitute for
-        professional tax, legal or accounting advice. Verify compliance with
-        local GCC regulations before official use.
+        Validation reflects the country and document rules configured in this application. Users remain responsible for confirming applicable legal, tax, payroll and regulatory requirements.
       </p>
-      <div class="arabic">
-        شكراً لاستخدامكم خدماتنا • Thank you for using GulfDocs
+      <div class="arabic" style="margin-top: 14px;">
+        شكراً لاستخدامكم خدماتنا • Professional documents, generated instantly.
       </div>
     </footer>
   </body>

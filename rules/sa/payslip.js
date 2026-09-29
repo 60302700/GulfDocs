@@ -3,11 +3,11 @@
  *
  * Country: Saudi Arabia (SA)
  * Document Type: payslip
- * Authority: Zakat, Tax and Customs Authority (ZATCA)
+ * Authority: Ministry of Human Resources and Social Development (MHRSD)
  *
- * Saudi WPS (Wage Protection System) requires salary payment through approved channels and monthly reporting. Full WPS compliance requires HRSD-approved integration not implemented.
+ * Saudi Wage Protection System (WPS) mandates salary payment through approved financial institutions and monthly payroll reporting via Mudad. Generating a PDF payslip does not constitute Mudad WPS compliance.
  *
- * DISCLAIMER: Saudi Arabia operates ZATCA e-invoicing (Fatoorah). Phase 1 (generation) and Phase 2 (integration) are progressive requirements. This application generates PDF-level invoices only. Government clearance/reporting is NOT implemented.
+ * DISCLAIMER: Saudi payroll requirements are governed by Saudi Labour Law (Royal Decree No. M/51) and MHRSD WPS regulations. Generating a payslip document does not constitute Mudad file upload or compliance.
  */
 
 export default function getRules(issueDate, transactionType = "B2B") {
@@ -19,38 +19,50 @@ export default function getRules(issueDate, transactionType = "B2B") {
         country_name: "Saudi Arabia",
         document_type: "payslip",
         currency: "SAR",
-        vat_rate: 0.15,
-        has_vat: true,
+        vat_rate: 0.0,
+        has_vat: false,
         engine_status: "PARTIALLY_IMPLEMENTED",
         transaction_type: transactionType,
         effective_from: issueDate || new Date().toISOString().slice(0, 10),
         required_fields: [
-        "employer.name",
-        "employee.name",
-        "employee.id",
-        "payPeriod",
-        "grossPay",
-        "netPay",
-        "currency.code"
-],
+            "employer.name",
+            "employee.name",
+            "employee.id",
+            "payPeriod",
+            "grossPay",
+            "netPay",
+            "currency.code"
+        ],
         warning_fields: [
-        "payment.bankAccount.bankName"
-],
-        extra_rules: [],
+            "payment.bankAccount.bankName"
+        ],
+        extra_rules: [
+            {
+                code: "SA_WPS_MUDAD_REQUIREMENT",
+                description: "Saudi WPS requires monthly salary file processing through Mudad / banking channels",
+                status: "NOT_YET_IMPLEMENTED",
+                field: "payment",
+                authority: "Ministry of Human Resources and Social Development (MHRSD)",
+                sourceTitle: "MHRSD Wage Protection Program Regulations and Mudad Platform Integration",
+                sourceUrl: "https://mudad.com.sa/",
+                effectiveDate: "2020-11-01",
+                notes: "Standard PDF payslips do not satisfy the Mudad electronic salary upload requirement."
+            }
+        ],
         source_registry: [
-        {
+            {
                 "code": "SA_PAYSLIP_RULES",
                 "status": "PARTIALLY_IMPLEMENTED",
-                "authority": "Zakat, Tax and Customs Authority (ZATCA)",
-                "sourceTitle": "Saudi Labour Law (Royal Decree No. M/51 of 23/8/1426H) and WPS (Ministry of Human Resources)",
+                "authority": "Ministry of Human Resources and Social Development (MHRSD)",
+                "sourceTitle": "Saudi Labour Law (Royal Decree No. M/51) and MHRSD Wage Protection System",
                 "sourceUrl": "https://www.hrsd.gov.sa/",
                 "version": "2026-09",
                 "publishedDate": "2005-09-27",
                 "effectiveDate": "2005-09-27",
                 "lastVerified": "2026-09-01",
-                "notes": "Saudi WPS (Wage Protection System) requires salary payment through approved channels and monthly reporting. Full WPS compliance requires HRSD-approved integration not implemented."
-        }
-],
+                "notes": "Saudi WPS (Wage Protection System) requires salary payment through approved channels and monthly reporting via Mudad. Full WPS compliance requires HRSD-approved integration."
+            }
+        ],
         customValidate,
     };
 }

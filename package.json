@@ -1,11 +1,13 @@
 {
-  "name": "site-1",
+  "name": "gulfdocs",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Free GCC business document generator",
+  "main": "server.js",
   "scripts": {
     "dev": "node server.js",
-    "test": "node --experimental-modules test/exporter.test.mjs"
+    "start": "node server.js",
+    "build": "node -e 'console.log(\"Build ready\")'",
+    "test": "node test/exporter.test.mjs && node test/phase2-rules.test.mjs && node test/phase3-router.test.mjs && node test/phase4-exporters.test.mjs && node test/phase5-i18n.test.mjs && node test/phase6-structured.test.mjs && node test/builders.test.cjs && node test/phase7-hardening.test.mjs && node test/phase8-security-privacy.test.mjs && node test/phase10-ads-monetization.test.mjs && node test/phase11-release-audit.test.mjs"
   },
   "keywords": [],
   "author": "",

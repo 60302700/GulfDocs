@@ -3,11 +3,11 @@
  *
  * Country: Bahrain (BH)
  * Document Type: payslip
- * Authority: National Bureau for Revenue (NBR) — Kingdom of Bahrain
+ * Authority: Ministry of Labour / Labour Market Regulatory Authority (LMRA)
  *
- * Bahrain WPS requires salary through approved channels. Full WPS integration not implemented.
+ * Bahrain WPS mandates electronic payment of private sector workers' salaries through CBB-licensed retail banks. PDF payslips do not substitute for official WPS banking transfers.
  *
- * DISCLAIMER: Bahrain VAT is 10% (raised from 5% in January 2022). E-invoicing requirements are OFFICIAL_SPECIFICATION_UNAVAILABLE pending NBR mandate publication.
+ * DISCLAIMER: Bahrain payroll requirements are governed by Bahrain Labour Law (Decree-Law No. 36 of 2012) and LMRA Wage Protection System regulations.
  */
 
 export default function getRules(issueDate, transactionType = "B2B") {
@@ -19,37 +19,50 @@ export default function getRules(issueDate, transactionType = "B2B") {
         country_name: "Bahrain",
         document_type: "payslip",
         currency: "BHD",
-        vat_rate: 0.1,
-        has_vat: true,
+        vat_rate: 0.0,
+        has_vat: false,
         engine_status: "PARTIALLY_IMPLEMENTED",
         transaction_type: transactionType,
         effective_from: issueDate || new Date().toISOString().slice(0, 10),
         required_fields: [
-        "employer.name",
-        "employee.name",
-        "payPeriod",
-        "grossPay",
-        "netPay"
-],
+            "employer.name",
+            "employee.name",
+            "employee.id",
+            "payPeriod",
+            "grossPay",
+            "netPay",
+            "currency.code"
+        ],
         warning_fields: [
-        "employee.id",
-        "payment.bankAccount.bankName"
-],
-        extra_rules: [],
+            "payment.bankAccount.bankName"
+        ],
+        extra_rules: [
+            {
+                code: "BH_WPS_TRANSFER_REQUIREMENT",
+                description: "LMRA WPS requires salary disbursement through licensed financial institutions",
+                status: "NOT_YET_IMPLEMENTED",
+                field: "payment",
+                authority: "Labour Market Regulatory Authority (LMRA)",
+                sourceTitle: "LMRA Wage Protection System (Decree No. 68 of 2019)",
+                sourceUrl: "https://lmra.gov.bh/",
+                effectiveDate: "2019-09-01",
+                notes: "Standard PDF payslip does not substitute for LMRA WPS electronic bank disbursement."
+            }
+        ],
         source_registry: [
-        {
+            {
                 "code": "BH_PAYSLIP_RULES",
                 "status": "PARTIALLY_IMPLEMENTED",
-                "authority": "National Bureau for Revenue (NBR) \u2014 Kingdom of Bahrain",
-                "sourceTitle": "Bahrain Labour Law \u2014 Legislative Decree No. 36 of 2012; WPS (Ministry of Labour)",
-                "sourceUrl": "https://www.mlsd.gov.bh/",
+                "authority": "Ministry of Labour / Labour Market Regulatory Authority (LMRA)",
+                "sourceTitle": "Bahrain Labour Law for the Private Sector (Law No. 36 of 2012) and LMRA WPS Regulations",
+                "sourceUrl": "https://lmra.gov.bh/",
                 "version": "2026-09",
-                "publishedDate": "2012-01-01",
-                "effectiveDate": "2012-01-01",
+                "publishedDate": "2012-07-26",
+                "effectiveDate": "2012-09-01",
                 "lastVerified": "2026-09-01",
-                "notes": "Bahrain WPS requires salary through approved channels. Full WPS integration not implemented."
-        }
-],
+                "notes": "Bahrain WPS requires salary disbursement through licensed retail banks. Full WPS electronic integration not implemented."
+            }
+        ],
         customValidate,
     };
 }

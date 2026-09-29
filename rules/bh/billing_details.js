@@ -3,11 +3,11 @@
  *
  * Country: Bahrain (BH)
  * Document Type: billing_details
- * Authority: National Bureau for Revenue (NBR) — Kingdom of Bahrain
+ * Authority: Central Bank of Bahrain (CBB)
  *
- * Bahrain IBAN: BH + 2 check + 4 bank + 14 digits = 22 chars.
+ * Bahrain IBAN standard requires 22 alphanumeric characters: BH + 2 check digits + 4 bank letters + 14 account characters.
  *
- * DISCLAIMER: Bahrain VAT is 10% (raised from 5% in January 2022). E-invoicing requirements are OFFICIAL_SPECIFICATION_UNAVAILABLE pending NBR mandate publication.
+ * DISCLAIMER: Billing Details is a payment instruction document. Requirements reflect Central Bank of Bahrain (CBB) standards. This is not a tax invoice.
  */
 
 export default function getRules(issueDate, transactionType = "B2B") {
@@ -19,37 +19,37 @@ export default function getRules(issueDate, transactionType = "B2B") {
         country_name: "Bahrain",
         document_type: "billing_details",
         currency: "BHD",
-        vat_rate: 0.1,
-        has_vat: true,
+        vat_rate: 0.0,
+        has_vat: false,
         engine_status: "IMPLEMENTED",
         transaction_type: transactionType,
         effective_from: issueDate || new Date().toISOString().slice(0, 10),
         required_fields: [
-        "beneficiary.name",
-        "bankAccount.bankName",
-        "currency.code",
-        "amount",
-        "paymentReference"
-],
+            "beneficiary.name",
+            "bankAccount.bankName",
+            "currency.code",
+            "amount",
+            "paymentReference"
+        ],
         warning_fields: [
-        "bankAccount.iban",
-        "bankAccount.swiftBic"
-],
+            "bankAccount.iban",
+            "bankAccount.swiftBic"
+        ],
         extra_rules: [],
         source_registry: [
-        {
+            {
                 "code": "BH_BILLING_DETAILS_RULES",
                 "status": "IMPLEMENTED",
-                "authority": "National Bureau for Revenue (NBR) \u2014 Kingdom of Bahrain",
-                "sourceTitle": "Central Bank of Bahrain \u2014 Payment Systems and Services Rulebook",
+                "authority": "Central Bank of Bahrain (CBB)",
+                "sourceTitle": "Central Bank of Bahrain — Payment Systems and Services Rulebook (IBAN Standard)",
                 "sourceUrl": "https://www.cbb.gov.bh/",
                 "version": "2026-09",
-                "publishedDate": "2019-01-01",
-                "effectiveDate": "2019-01-01",
+                "publishedDate": "2012-01-01",
+                "effectiveDate": "2012-01-01",
                 "lastVerified": "2026-09-01",
-                "notes": "Bahrain IBAN: BH + 2 check + 4 bank + 14 digits = 22 chars."
-        }
-],
+                "notes": "Bahrain IBAN format requires 22 characters: BH + 2 check digits + 4 letter bank code + 14 account characters."
+            }
+        ],
         customValidate,
     };
 }

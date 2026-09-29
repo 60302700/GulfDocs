@@ -14,6 +14,8 @@ import {
     checkTotalsMath,
     checkDateOrder,
     warnCurrencyMismatch,
+    validateGccIban,
+    GCC_EMPLOYEE_ID_PATTERNS,
     isIsoDate,
     isNonNeg,
     hasValue,
@@ -116,13 +118,25 @@ export function validateDocument(canonical, rules = {}) {
         if (canonical.payDate && !isIsoDate(canonical.payDate)) {
             warnings.push(mkWarning("payDate", "INVALID_DATE", `Pay date "${canonical.payDate}" should be ISO 8601 (YYYY-MM-DD).`, source));
         }
+        // Employee ID format check (if present and country pattern exists)
+        const empId = canonical.employee?.id;
+        const countryCode = (canonical.country || rules.country || "").toUpperCase();
+        if (empId && GCC_EMPLOYEE_ID_PATTERNS[countryCode]) {
+            if (!GCC_EMPLOYEE_ID_PATTERNS[countryCode].test(String(empId).trim())) {
+                warnings.push(mkWarning("employee.id", "INVALID_EMPLOYEE_ID_FORMAT", `Employee ID "${empId}" does not match standard ${countryCode} ID format.`, source));
+            }
+        }
     }
 
     if (dt === "billing_details") {
         const ba = canonical.bankAccount || {};
+        const countryCode = (canonical.country || rules.country || "").toUpperCase();
         // IBAN format check (optional field — only warn if populated)
-        if (ba.iban && !/^[A-Z]{2}\d{2}[A-Z0-9]{1,30}$/.test(ba.iban.replace(/\s/g, ""))) {
-            warnings.push(mkWarning("bankAccount.iban", "INVALID_IBAN_FORMAT", "IBAN format appears invalid.", source));
+        if (ba.iban) {
+            const cleanIban = ba.iban.replace(/\s/g, "").toUpperCase();
+            if (!validateGccIban(cleanIban, countryCode)) {
+                warnings.push(mkWarning("bankAccount.iban", "INVALID_IBAN_FORMAT", `IBAN format appears invalid for ${countryCode}.`, source));
+            }
         }
         // SWIFT/BIC
         if (ba.swiftBic && !/^[A-Z]{4}[A-Z]{2}[A-Z0-9]{2}([A-Z0-9]{3})?$/.test(ba.swiftBic.replace(/\s/g, "").toUpperCase())) {

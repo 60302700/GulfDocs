@@ -1,7 +1,9 @@
-const express = require("express");
-const helmet = require("helmet");
-const { engine } = require("express-handlebars");
-const path = require("path");
+import express from "express";
+import helmet from "helmet";
+import { engine } from "express-handlebars";
+import path from "path";
+import { fileURLToPath } from "url";
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 
@@ -23,6 +25,7 @@ const app = express();
 // https://*.googlesyndication.com) - see Google's AdSense CSP docs.
 app.use(
   helmet({
+    frameguard: false,
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
@@ -33,6 +36,7 @@ app.use(
         imgSrc: ["'self'", "data:"],
         connectSrc: ["'self'"],
         frameSrc: ["'self'"],
+        frameAncestors: null,
         objectSrc: ["'none'"],
         baseUri: ["'self'"],
         formAction: ["'self'"],

@@ -69,6 +69,9 @@ const CookieConsent = {
     applyConsent(choice) {
         // Future ad/analytics scripts should check this flag before loading.
         window.docscraftAdsAllowed = (choice === 'all');
+        try {
+            window.dispatchEvent(new CustomEvent('docscraft_consent_changed', { detail: { choice } }));
+        } catch (e) {}
     }
 };
 

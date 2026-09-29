@@ -1,10 +1,8 @@
+import { exportCanonicalJson } from "./generic/json.js";
+
 export function exportJSON(canonical, opts = {}) {
-  const blob = JSON.stringify(
-    { exported_at: new Date().toISOString(), payload: canonical },
-    null,
-    2,
-  );
-  return { format: "json", data: blob };
+  const res = exportCanonicalJson(canonical, opts);
+  return { format: "json", data: res.data };
 }
 
 export default { exportJSON };

@@ -3,11 +3,11 @@
  *
  * Country: United Arab Emirates (AE)
  * Document Type: billing_details
- * Authority: Federal Tax Authority (FTA) — UAE
+ * Authority: Central Bank of the United Arab Emirates (CBUAE)
  *
- * UAE uses IBAN (AE + 2 check + 19 digits). SWIFT/BIC required for international transfers.
+ * UAE bank account transfers require IBAN format (AE + 2 check + 19 digits = 23 characters). SWIFT/BIC required for international incoming wires.
  *
- * DISCLAIMER: UAE VAT was introduced on 1 January 2018 at 5%. E-invoicing (Haytek) is under development. Rules reflect FTA published VAT invoice requirements.
+ * DISCLAIMER: Billing Details is a payment instruction document. Requirements reflect CBUAE IBAN standards and commercial payment practice. This is not a tax invoice.
  */
 
 export default function getRules(issueDate, transactionType = "B2B") {
@@ -19,37 +19,37 @@ export default function getRules(issueDate, transactionType = "B2B") {
         country_name: "United Arab Emirates",
         document_type: "billing_details",
         currency: "AED",
-        vat_rate: 0.05,
-        has_vat: true,
+        vat_rate: 0.0,
+        has_vat: false,
         engine_status: "IMPLEMENTED",
         transaction_type: transactionType,
         effective_from: issueDate || new Date().toISOString().slice(0, 10),
         required_fields: [
-        "beneficiary.name",
-        "bankAccount.bankName",
-        "currency.code",
-        "amount",
-        "paymentReference"
-],
+            "beneficiary.name",
+            "bankAccount.bankName",
+            "currency.code",
+            "amount",
+            "paymentReference"
+        ],
         warning_fields: [
-        "bankAccount.iban",
-        "bankAccount.swiftBic"
-],
+            "bankAccount.iban",
+            "bankAccount.swiftBic"
+        ],
         extra_rules: [],
         source_registry: [
-        {
+            {
                 "code": "AE_BILLING_DETAILS_RULES",
                 "status": "IMPLEMENTED",
-                "authority": "Federal Tax Authority (FTA) \u2014 UAE",
-                "sourceTitle": "Central Bank of the UAE \u2014 Payment Systems Regulation",
+                "authority": "Central Bank of the United Arab Emirates (CBUAE)",
+                "sourceTitle": "Central Bank of the UAE — IBAN Standard and Payment Systems Regulation",
                 "sourceUrl": "https://www.centralbank.ae/",
                 "version": "2026-09",
-                "publishedDate": "2019-01-01",
-                "effectiveDate": "2019-01-01",
+                "publishedDate": "2012-04-14",
+                "effectiveDate": "2012-04-14",
                 "lastVerified": "2026-09-01",
-                "notes": "UAE uses IBAN (AE + 2 check + 19 digits). SWIFT/BIC required for international transfers."
-        }
-],
+                "notes": "UAE IBAN standard requires 23 characters: AE + 2 check digits + 3 digits bank identifier + 16 digits account number."
+            }
+        ],
         customValidate,
     };
 }

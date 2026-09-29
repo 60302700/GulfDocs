@@ -22,11 +22,103 @@ const DOC_TYPES = ["invoice", "payslip", "quotation", "purchase_order", "billing
 // ─────────────────────────────────────────────────────────────────────────────
 //  Canonical helpers — produce minimal VALID documents per type
 // ─────────────────────────────────────────────────────────────────────────────
-function minimalInvoice(country) { return { documentType: "invoice", country, id: "INV-001", issueDate: "2026-09-01", currency: { code: "USD" }, seller: { name: "Seller Co", taxIdentity: { taxId: "123456789012345" }, address: { raw: "123 Main St" } }, buyer: { name: "Buyer Co", taxIdentity: { taxId: "" }, address: { raw: "" } }, items: [{ id: "1", unitPrice: 100, quantity: 1, totalAmount: 100 }], taxes: [{ amount: 5, taxableAmount: 100 }], total: { subtotal: 100, tax: 5, discount: 0, grandTotal: 105 } }; }
-function minimalPayslip(country) { return { documentType: "payslip", country, employer: { name: "Employer LLC" }, employee: { name: "John Doe", id: "EMP-001" }, payPeriod: "2026-09", payDate: "2026-09-25", grossPay: 3000, netPay: 2700, currency: { code: "USD" } }; }
-function minimalQuotation(country) { return { documentType: "quotation", country, id: "QT-001", issueDate: "2026-09-01", validUntil: "2026-10-01", currency: { code: "USD" }, seller: { name: "Seller Co", address: { raw: "Addr" } }, buyer: { name: "Buyer Co" }, items: [{ id: "1", unitPrice: 50, quantity: 2, totalAmount: 100 }], taxes: [{ amount: 0, taxableAmount: 100 }], total: { subtotal: 100, tax: 0, discount: 0, grandTotal: 100 } }; }
-function minimalPurchaseOrder(country) { return { documentType: "purchase_order", country, id: "PO-001", issueDate: "2026-09-01", currency: { code: "USD" }, buyer: { name: "Buyer Co", address: { raw: "Addr" } }, supplier: { name: "Supplier Ltd" }, items: [{ id: "1", unitPrice: 200, quantity: 1, totalAmount: 200 }], taxes: [{ amount: 0, taxableAmount: 200 }], total: { subtotal: 200, tax: 0, discount: 0, grandTotal: 200 } }; }
-function minimalBillingDetails(country) { return { documentType: "billing_details", country, beneficiary: { name: "Beneficiary" }, bankAccount: { bankName: "National Bank", iban: (country || "QA") + "29NBOK0000000000123456", swiftBic: "NBOKQAQAXXX" }, currency: { code: "USD" }, amount: 500, paymentReference: "PAY-2026-001" }; }
+function minimalInvoice(country) {
+    const c = (country || "QA").toUpperCase();
+    const taxId = c === "SA" ? "300000000000003" : (c === "AE" ? "100123456789012" : "123456789012345");
+    return {
+        documentType: "invoice",
+        country: c,
+        id: "INV-001",
+        issueDate: "2026-09-01",
+        currency: { code: "USD" },
+        seller: { name: "Seller Co", taxIdentity: { taxId }, address: { raw: "123 Main St" } },
+        buyer: { name: "Buyer Co", taxIdentity: { taxId: "" }, address: { raw: "" } },
+        items: [{ id: "1", unitPrice: 100, quantity: 1, totalAmount: 100 }],
+        taxes: [{ amount: 5, taxableAmount: 100 }],
+        total: { subtotal: 100, tax: 5, discount: 0, grandTotal: 105 }
+    };
+}
+
+function minimalPayslip(country) {
+    const c = (country || "QA").toUpperCase();
+    const idMap = {
+        QA: "28463400123",
+        AE: "784-1990-1234567-1",
+        SA: "1012345678",
+        BH: "901234567",
+        KW: "290010112345",
+        OM: "12345678",
+    };
+    return {
+        documentType: "payslip",
+        country: c,
+        employer: { name: "Employer LLC" },
+        employee: { name: "John Doe", id: idMap[c] || "1012345678" },
+        payPeriod: "2026-09",
+        payDate: "2026-09-25",
+        grossPay: 3000,
+        netPay: 2700,
+        currency: { code: "USD" }
+    };
+}
+
+function minimalQuotation(country) {
+    const c = (country || "QA").toUpperCase();
+    return {
+        documentType: "quotation",
+        country: c,
+        id: "QT-001",
+        issueDate: "2026-09-01",
+        validUntil: "2026-10-01",
+        currency: { code: "USD" },
+        seller: { name: "Seller Co", address: { raw: "Addr" } },
+        buyer: { name: "Buyer Co" },
+        items: [{ id: "1", unitPrice: 50, quantity: 2, totalAmount: 100 }],
+        taxes: [{ amount: 0, taxableAmount: 100 }],
+        total: { subtotal: 100, tax: 0, discount: 0, grandTotal: 100 }
+    };
+}
+
+function minimalPurchaseOrder(country) {
+    const c = (country || "QA").toUpperCase();
+    return {
+        documentType: "purchase_order",
+        country: c,
+        id: "PO-001",
+        issueDate: "2026-09-01",
+        currency: { code: "USD" },
+        buyer: { name: "Buyer Co", address: { raw: "Addr" } },
+        supplier: { name: "Supplier Ltd" },
+        items: [{ id: "1", unitPrice: 200, quantity: 1, totalAmount: 200 }],
+        taxes: [{ amount: 0, taxableAmount: 200 }],
+        total: { subtotal: 200, tax: 0, discount: 0, grandTotal: 200 }
+    };
+}
+
+function minimalBillingDetails(country) {
+    const c = (country || "QA").toUpperCase();
+    const ibanMap = {
+        QA: "QA29NBOK000000000000012345678",
+        AE: "AE070331234567890123456",
+        SA: "SA0380000000608010167519",
+        BH: "BH67BMBL00001234567890",
+        KW: "KW81NBOK0000000000000000123456",
+        OM: "OM61BMSO0123456789012345",
+    };
+    return {
+        documentType: "billing_details",
+        country: c,
+        beneficiary: { name: "Beneficiary" },
+        bankAccount: {
+            bankName: "National Bank",
+            iban: ibanMap[c] || ibanMap.QA,
+            swiftBic: "NBOKQAQAXXX"
+        },
+        currency: { code: "USD" },
+        amount: 500,
+        paymentReference: "PAY-2026-001"
+    };
+}
 
 const MINIMAL_BUILDERS = {
     invoice: minimalInvoice,

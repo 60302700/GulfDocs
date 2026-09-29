@@ -3,11 +3,11 @@
  *
  * Country: Qatar (QA)
  * Document Type: billing_details
- * Authority: Qatar Tax Authority (QTA) / Ministry of Finance Qatar
+ * Authority: Qatar Central Bank (QCB)
  *
- * IBAN standard applies for Qatar (QA + 2 check digits + 25 alphanumeric).
+ * Qatar IBAN standard requires 29 characters: QA + 2 check digits + 4 letter bank identifier + 21 account characters.
  *
- * DISCLAIMER: Qatar does not currently impose Value Added Tax. Regulatory requirements are based on the Qatar Commercial Law (Law No. 27/2006) and Qatar Tax Authority guidance.
+ * DISCLAIMER: Billing Details is a payment instruction document. Requirements reflect Qatar Central Bank (QCB) standards. This is not a tax invoice.
  */
 
 export default function getRules(issueDate, transactionType = "B2B") {
@@ -25,31 +25,31 @@ export default function getRules(issueDate, transactionType = "B2B") {
         transaction_type: transactionType,
         effective_from: issueDate || new Date().toISOString().slice(0, 10),
         required_fields: [
-        "beneficiary.name",
-        "bankAccount.bankName",
-        "currency.code",
-        "amount",
-        "paymentReference"
-],
+            "beneficiary.name",
+            "bankAccount.bankName",
+            "currency.code",
+            "amount",
+            "paymentReference"
+        ],
         warning_fields: [
-        "bankAccount.iban",
-        "bankAccount.swiftBic"
-],
+            "bankAccount.iban",
+            "bankAccount.swiftBic"
+        ],
         extra_rules: [],
         source_registry: [
-        {
+            {
                 "code": "QA_BILLING_DETAILS_RULES",
                 "status": "IMPLEMENTED",
-                "authority": "Qatar Tax Authority (QTA) / Ministry of Finance Qatar",
-                "sourceTitle": "Qatar Central Bank \u2014 Payment Systems Regulation",
+                "authority": "Qatar Central Bank (QCB)",
+                "sourceTitle": "Qatar Central Bank — IBAN Standard and Payment Systems Regulation",
                 "sourceUrl": "https://www.qcb.gov.qa/",
                 "version": "2026-09",
-                "publishedDate": "2020-01-01",
-                "effectiveDate": "2020-01-01",
+                "publishedDate": "2014-01-01",
+                "effectiveDate": "2014-01-01",
                 "lastVerified": "2026-09-01",
-                "notes": "IBAN standard applies for Qatar (QA + 2 check digits + 25 alphanumeric)."
-        }
-],
+                "notes": "Qatar IBAN format requires 29 characters: QA + 2 check digits + 4 letter bank code + 21 account characters."
+            }
+        ],
         customValidate,
     };
 }

@@ -42,17 +42,32 @@ const _cache = {};
 /**
  * Resolve and return the rules object for a given (country, documentType) combination.
  *
- * @param {{ country: string, documentType: string, issueDate?: string, transactionType?: string }} opts
+ * @param {{ country: string, documentType: string, issueDate?: string, transactionType?: string } | string} countryOrOpts
+ * @param {string} [docTypeArg]
+ * @param {string} [issueDateArg]
+ * @param {string} [txnTypeArg]
  * @returns {Promise<object>} rules object (see individual module for full shape)
  */
-export async function getRules({
-    country = "QA",
-    documentType = "invoice",
-    issueDate = new Date().toISOString().slice(0, 10),
-    transactionType = "B2B",
-} = {}) {
-    const c = country.toLowerCase();
-    const doc = DOC_SLUG_MAP[documentType.toLowerCase()] ?? null;
+export async function getRules(countryOrOpts = "QA", docTypeArg, issueDateArg, txnTypeArg) {
+    let country = "QA";
+    let documentType = "invoice";
+    let issueDate = new Date().toISOString().slice(0, 10);
+    let transactionType = "B2B";
+
+    if (typeof countryOrOpts === "object" && countryOrOpts !== null) {
+        country = countryOrOpts.country || country;
+        documentType = countryOrOpts.documentType || countryOrOpts.document_type || documentType;
+        issueDate = countryOrOpts.issueDate || countryOrOpts.issue_date || issueDate;
+        transactionType = countryOrOpts.transactionType || countryOrOpts.transaction_type || transactionType;
+    } else if (typeof countryOrOpts === "string") {
+        country = countryOrOpts;
+        if (docTypeArg) documentType = docTypeArg;
+        if (issueDateArg) issueDate = issueDateArg;
+        if (txnTypeArg) transactionType = txnTypeArg;
+    }
+
+    const c = String(country || "").toLowerCase();
+    const doc = DOC_SLUG_MAP[String(documentType || "").toLowerCase()] ?? null;
 
     if (!COUNTRIES.includes(c)) {
         return _notImplemented(country, documentType, `Country "${country}" is not in the supported GCC list: ${COUNTRIES.join(", ")}.`);
@@ -77,11 +92,28 @@ export async function getRules({
 }
 
 /** Synchronous variant — for code paths that have already awaited once (e.g., after caching). */
-export function getRulesSync({ country, documentType, issueDate, transactionType } = {}) {
-    const c = (country || "QA").toLowerCase();
-    const doc = DOC_SLUG_MAP[(documentType || "invoice").toLowerCase()] || "invoice";
+export function getRulesSync(countryOrOpts = "QA", docTypeArg, issueDateArg, txnTypeArg) {
+    let country = "QA";
+    let documentType = "invoice";
+    let issueDate = new Date().toISOString().slice(0, 10);
+    let transactionType = "B2B";
+
+    if (typeof countryOrOpts === "object" && countryOrOpts !== null) {
+        country = countryOrOpts.country || country;
+        documentType = countryOrOpts.documentType || countryOrOpts.document_type || documentType;
+        issueDate = countryOrOpts.issueDate || countryOrOpts.issue_date || issueDate;
+        transactionType = countryOrOpts.transactionType || countryOrOpts.transaction_type || transactionType;
+    } else if (typeof countryOrOpts === "string") {
+        country = countryOrOpts;
+        if (docTypeArg) documentType = docTypeArg;
+        if (issueDateArg) issueDate = issueDateArg;
+        if (txnTypeArg) transactionType = txnTypeArg;
+    }
+
+    const c = String(country || "").toLowerCase();
+    const doc = DOC_SLUG_MAP[String(documentType || "").toLowerCase()] || "invoice";
     const ck = `${c}:${doc}`;
-    if (_cache[ck]) return _cache[ck](issueDate || new Date().toISOString().slice(0, 10), transactionType || "B2B");
+    if (_cache[ck]) return _cache[ck](issueDate, transactionType);
     return null; // not cached yet, caller must await getRules() first
 }
 

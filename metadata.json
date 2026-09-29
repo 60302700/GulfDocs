@@ -1,0 +1,7 @@
+{
+  "name": "GulfDocs",
+  "description": "Free GCC business document generator for Qatar, UAE, Saudi Arabia, Bahrain, Kuwait, and Oman. Create invoices, payslips, purchase orders, quotations, and billing details instantly.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
