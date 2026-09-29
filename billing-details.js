@@ -83,8 +83,6 @@ function loadLogo(event) {
       logoEl.src = e.target.result;
       logoEl.style.display = "block";
       document.getElementById("logo-placeholder").style.display = "none";
-      if (p.theme && typeof ThemeManager !== "undefined")
-        ThemeManager.applyThemeObject(p.theme);
     };
     reader.readAsDataURL(file);
   }
@@ -155,7 +153,7 @@ function buildCanonicalBillingDetails() {
   };
 
   const bdBank = document.getElementById('bd-bank')?.textContent?.trim() || '';
-  const bdIban = document.getElementById('bd-iban')?.textContent?.trim() || '';
+  const bdIban = document.getElementById('bd-iban')?.textContent?.trim() || document.getElementById('profile-trn')?.textContent?.trim() || '';
   const bdSwift = document.getElementById('bd-swift')?.textContent?.trim() || '';
   const bdAcc = document.getElementById('bd-account')?.textContent?.trim() || '';
 
@@ -169,22 +167,26 @@ function buildCanonicalBillingDetails() {
   };
 
   const currencyCode = document.getElementById("currency-select")?.value || "QAR";
+  const currencyToCountry = { QAR: "QA", AED: "AE", SAR: "SA", BHD: "BH", KWD: "KW", OMR: "OM" };
+  const countryVal = document.getElementById("country-select")?.value || currencyToCountry[currencyCode] || "QA";
   const amount = parseFloat(document.getElementById("sum-total")?.textContent) || 0;
+  const issueDateVal = document.getElementById("bill-date")?.value || document.getElementById("bd-date")?.value || new Date().toISOString().slice(0, 10);
+  const dueDateVal = document.getElementById("bill-due")?.value || document.getElementById("bd-due-date")?.value || "";
 
   return {
     id: document.querySelector(".inv-meta .meta-grid .editable")?.textContent?.trim() || "",
     documentType: "billing_details",
-    country: document.getElementById("country-select")?.value || "QA",
+    country: countryVal,
     language: "en",
     currency: { code: currencyCode, exchangeRate: 1 },
-    issueDate: document.getElementById("bd-date")?.value || "",
+    issueDate: issueDateVal,
     status: "",
     version: "1",
     beneficiary,
     bankAccount,
     amount,
     paymentReference: document.querySelector(".bento-card:nth-child(2) .info-row:nth-child(3) .editable")?.textContent?.trim() || "",
-    dueDate: document.getElementById("bd-due-date")?.value || "",
+    dueDate: dueDateVal,
     paymentSchedule: [],
     payment: {
       bankAccount,

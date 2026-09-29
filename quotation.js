@@ -70,7 +70,6 @@ function loadLogo(event) {
             logoEl.style.display = 'block';
             logoEl.style.filter = 'none';
             document.getElementById('logo-placeholder').style.display = 'none';
-            if (p.theme && typeof ThemeManager !== 'undefined') ThemeManager.applyThemeObject(p.theme);
         }
         reader.readAsDataURL(file);
     }
@@ -165,6 +164,8 @@ function buildCanonicalQuotation() {
   });
 
   const currencyCode = document.getElementById("currency-select")?.value || "QAR";
+  const currencyToCountry = { QAR: "QA", AED: "AE", SAR: "SA", BHD: "BH", KWD: "KW", OMR: "OM" };
+  const countryVal = document.getElementById("country-select")?.value || currencyToCountry[currencyCode] || "QA";
   const subtotal = parseFloat(document.getElementById("sum-subtotal")?.textContent) || 0;
   const vatAmount = parseFloat(document.getElementById("sum-vat")?.textContent) || 0;
   const discountInput = document.getElementById("in-discount");
@@ -174,7 +175,7 @@ function buildCanonicalQuotation() {
   return {
     id: document.querySelector(".inv-meta .meta-grid .editable")?.textContent?.trim() || "",
     documentType: "quotation",
-    country: document.getElementById("country-select")?.value || "QA",
+    country: countryVal,
     language: "en",
     currency: { code: currencyCode, exchangeRate: 1 },
     issueDate: document.getElementById("qt-date")?.value || "",

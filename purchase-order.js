@@ -97,8 +97,6 @@ function loadLogo(event) {
       logoEl.src = e.target.result;
       logoEl.style.display = "block";
       document.getElementById("logo-placeholder").style.display = "none";
-      if (p.theme && typeof ThemeManager !== "undefined")
-        ThemeManager.applyThemeObject(p.theme);
     };
     reader.readAsDataURL(file);
   }
@@ -184,15 +182,17 @@ function buildCanonicalPurchaseOrder() {
 
   const items = [];
   document.querySelectorAll("#items-tbody tr").forEach((row, idx) => {
-    const desc = row.querySelector("td div.editable")?.textContent?.trim() || "";
-    // item code in PO? checking generic
-    const codeEl = row.querySelector("td:nth-child(2) div.editable");
+    const desc = row.querySelector("td:nth-child(2) div.editable")?.textContent?.trim() || "";
+    const codeEl = row.querySelector("td:nth-child(3) div.editable");
     const code = codeEl ? codeEl.textContent.trim() : "";
     const qtyEl = row.querySelector(".qty-input");
     const qty = qtyEl ? parseFloat(qtyEl.value) || 0 : 0;
     const priceEl = row.querySelector(".price-input");
     const price = priceEl ? parseFloat(priceEl.value) || 0 : 0;
-    const itemTotal = qty * price;
+    const vatRate = (parseFloat(row.querySelector(".vat-input")?.value) || 0) / 100;
+    const itemNet = qty * price;
+    const itemVat = itemNet * vatRate;
+    const itemTotal = itemNet + itemVat;
     
     items.push({
       id: String(idx + 1),
@@ -202,27 +202,31 @@ function buildCanonicalPurchaseOrder() {
       unit: "EA",
       unitPrice: price,
       discount: { amount: 0 },
-      tax: { category: "S", rate: 0, amount: 0, taxableAmount: itemTotal },
-      netAmount: itemTotal,
+      tax: { category: "S", rate: vatRate * 100, amount: itemVat, taxableAmount: itemNet },
+      netAmount: itemNet,
       totalAmount: itemTotal
     });
   });
 
   const currencyCode = document.getElementById("currency-select")?.value || "QAR";
+  const currencyToCountry = { QAR: "QA", AED: "AE", SAR: "SA", BHD: "BH", KWD: "KW", OMR: "OM" };
+  const countryVal = document.getElementById("country-select")?.value || currencyToCountry[currencyCode] || "QA";
   const subtotal = parseFloat(document.getElementById("sum-subtotal")?.textContent) || 0;
   const vatAmount = parseFloat(document.getElementById("sum-vat")?.textContent) || 0;
   const discountInput = document.getElementById("in-discount");
   const discountAmt = discountInput ? (parseFloat(discountInput.value) || 0) : 0;
+  const freightAmt = parseFloat(document.getElementById("in-freight")?.value) || 0;
   const grandTotal = parseFloat(document.getElementById("sum-total")?.textContent) || 0;
+  const deliveryDateVal = document.getElementById("po-delivery")?.value || document.getElementById("po-req-date")?.value || "";
 
   return {
     id: document.querySelector(".inv-meta .meta-grid .editable")?.textContent?.trim() || "",
     documentType: "purchase_order",
-    country: document.getElementById("country-select")?.value || "QA",
+    country: countryVal,
     language: "en",
     currency: { code: currencyCode, exchangeRate: 1 },
     issueDate: document.getElementById("po-date")?.value || "",
-    requiredDeliveryDate: document.getElementById("po-req-date")?.value || "",
+    requiredDeliveryDate: deliveryDateVal,
     status: "",
     version: "1",
     buyer,
@@ -239,7 +243,7 @@ function buildCanonicalPurchaseOrder() {
       amountDue: grandTotal
     },
     shipping: {
-      amount: parseFloat(document.getElementById("sum-freight")?.textContent) || 0
+      amount: freightAmt
     },
     payment: {
       terms: document.querySelector(".bento-card:nth-child(2) .info-row:nth-child(1) .editable")?.textContent?.trim() || ""

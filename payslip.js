@@ -89,8 +89,6 @@ function loadLogo(event) {
       logoEl.src = e.target.result;
       logoEl.style.display = "block";
       document.getElementById("logo-placeholder").style.display = "none";
-      if (p.theme && typeof ThemeManager !== "undefined")
-        ThemeManager.applyThemeObject(p.theme);
     };
     reader.readAsDataURL(file);
   }
@@ -186,11 +184,15 @@ function buildCanonicalPayslip() {
   });
 
   const currencyCode = document.getElementById("currency-select")?.value || "QAR";
+  const currencyToCountry = { QAR: "QA", AED: "AE", SAR: "SA", BHD: "BH", KWD: "KW", OMR: "OM" };
+  const countryVal = document.getElementById("country-select")?.value || currencyToCountry[currencyCode] || "QA";
+  const periodVal = document.getElementById("pay-period")?.value || "";
+  const calculatedPayDate = document.getElementById("pay-date")?.value || (periodVal ? `${periodVal}-28` : new Date().toISOString().slice(0, 10));
 
   return {
     id: document.querySelector(".inv-meta .meta-grid .editable")?.textContent?.trim() || "",
     documentType: "payslip",
-    country: document.getElementById("country-select")?.value || "QA",
+    country: countryVal,
     language: "en",
     currency: { code: currencyCode, exchangeRate: 1 },
     issueDate: document.getElementById("pay-date")?.value || new Date().toISOString().slice(0, 10),
@@ -198,8 +200,8 @@ function buildCanonicalPayslip() {
     version: "1",
     employer,
     employee,
-    payPeriod: document.getElementById("pay-period")?.value || "",
-    payDate: document.getElementById("pay-date")?.value || "",
+    payPeriod: periodVal,
+    payDate: calculatedPayDate,
     basicSalary: earnings.length > 0 ? earnings[0].amount : 0, // approximation based on basic
     allowances: earnings.slice(1),
     overtime: [],

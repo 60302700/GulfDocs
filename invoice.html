@@ -82,7 +82,7 @@
               text-transform: uppercase;
             "
           >
-            Export JSON
+            Export Profile
           </button>
           <button
             onclick="saveProfileToStorage()"
@@ -232,20 +232,62 @@
           </select>
         </div>
         <button
+          onclick="exportDocument('json')"
+          class="btn-secondary"
+          style="
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--doc-primary);
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            background: #fff;
+            transition: all 0.2s;
+          "
+          title="Export Canonical JSON Document"
+        >
+          JSON
+        </button>
+        <button
+          onclick="exportDocument('xml')"
+          class="btn-secondary"
+          style="
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--doc-primary);
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            background: #fff;
+            transition: all 0.2s;
+          "
+          title="Export E-Invoice XML (ZATCA for SA)"
+        >
+          XML (ZATCA)
+        </button>
+        <button
           onclick="if (validateBeforeExport()) window.print();"
           class="btn-primary"
           style="
             display: flex;
             align-items: center;
             gap: 8px;
-            color: var(--doc-primary);
+            color: #fff;
             font-weight: 600;
             font-size: 13px;
             cursor: pointer;
             padding: 8px 16px;
-            border: 1px solid #bfdbfe;
+            border: 1px solid var(--doc-primary);
             border-radius: 8px;
-            background: #eff6ff;
+            background: var(--doc-primary);
             transition: all 0.2s;
           "
         >
